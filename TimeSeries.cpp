@@ -49,7 +49,7 @@ class TimeSeries {
 
         void best_fit(double &m, double &b) {
 
-            assert ( this -> years_element_count_ == this -> data_element_count_ );
+            assert ( this -> years_element_count_ == this -> data_element_count_ && "years and data are not in pairs");
 
             double N = this -> years_element_count_; 
             //if we have no valid data then we simply set the m and b to be zer 
@@ -89,7 +89,7 @@ class TimeSeries {
             double m_term_3 = N * year_year_sum;
             double m_term_4 = year_year_sum;
 
-            assert((m_term_3 - m_term_4) != 0); // ensuring that there is no division by zero
+            assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope"); // ensuring that there is no division by zero
 
             m = (m_term_1 - m_term_2)/(m_term_3 - m_term_4);
 
@@ -97,7 +97,7 @@ class TimeSeries {
             double b_term_2 = m * year_sum;
             double b_term_3 = N;
 
-            assert(b_term_3); // asserting that we 
+            assert(b_term_3 && "divide by zero for y intercept"); // asserting that we 
 
             b = (b_term_1 - b_term_2) / b_term_3;
 
