@@ -50,6 +50,8 @@ class TimeSeries {
         void best_fit(double &m, double &b) {
 
             assert ( this -> years_element_count_ == this -> data_element_count_ );
+
+            double N = this -> years_element_count_; 
             //if we have no valid data then we simply set the m and b to be zer 
             if ( this -> valid_data_count_ == 0) {
                 m = 0;
@@ -57,32 +59,31 @@ class TimeSeries {
             }
             int year_sum = 0;
 
-            for (std::size_t i = 0; i < this -> years_element_count_; ++i){
+            for (std::size_t i = 0; i < N; ++i){
                 year_sum += years[i]; //there is no need to check for invalid years since years will always be valid
             }
 
             int data_sum = 0;
 
-            for (std::size_t i = 0; i < this -> data_element_count_; ++i){
+            for (std::size_t i = 0; i < N; ++i){
                 if (data[i] == -1) continue;
                 data_sum += data[i];
             }
 
             int year_year_sum = 0; 
 
-            for (std::size_t i = 0; i < this -> years_element_count_; ++i){
+            for (std::size_t i = 0; i < N; ++i){
                 year_year_sum += years[i] * years[i];
             }
 
             int data_year_sum = 0;
 
             // data_element_count_ should be the same size as the years_element_count since they are pairs
-            for ( std::size_t i = 0; i < this -> data_element_count_; ++i){
+            for ( std::size_t i = 0; i < N; ++i){
                 if (data[i] == -1) continue;
                 data_year_sum += years[i] * data[i];
             }
 
-            double N = this -> years_element_count_; 
             double m_term_1 = N * data_year_sum;
             double m_term_2 = data_sum * year_sum;
             double m_term_3 = N * year_year_sum;
