@@ -2,163 +2,172 @@
 #include <sys/types.h>
 #include <bits/c++config.h>
 #include <cassert>
-class TimeSeries {
 
-    public:
+uint* years;
+int* data;
+double m;
+double b;
 
-        //pointer to the years array, since years cannot be negative, that is why it is an uint
-        uint* years; 
+TimeSeries::TimeSeries() {
+    years = new uint[2];
+    this->years_array_capacity_ = 2;
+    this->years_array_size_ = 0;
+    data = new int[2];
+    this->data_array_capacity_ = 2;
+    this->data_array_size_ = 0;
+    this->valid_data_count_ = 0;
+}
 
-        //pointer to the data array, since data can be negative, that is why it is an int
-        int* data; 
+TimeSeries::~TimeSeries() {
+    delete[] years;
+    years = nullptr;
+    delete[] data;
+    data = nullptr;
+    assert(data == nullptr);
+    assert(years == nullptr);
+}
 
-        //slope of the best fit line of data
-        double m;
+double TimeSeries::mean() {
+    if (this->valid_data_count_ == 0) return 0;
 
-        //y int of the best fit ilne of data
-        double b;
-        
+    double sum = 0;
 
-        TimeSeries(){
+    for (std::size_t i = 0; i < this->data_array_size_; ++i) {
+        if (data[i] == -1) continue; //skipping invalid elements
+        sum += data[i]; //adding all the valid elements together
+    }
 
-        }
+    return sum / this->valid_data_count_;
+}
 
-        ~TimeSeries() {
-            delete[] years; 
-            years = nullptr;
-            delete[] data;
-            data = nullptr;
-            assert(data == nullptr);
-            assert(years == nullptr);
-        }
+bool TimeSeries::is_monotonic() {
+    if (this->valid_data_count_ == 0) return false;
 
-        double mean() {
+    bool strictly_increasing_flag = true;
+    bool strictly_decreasing_flag = true;
+    std::size_t N = this->data_array_size_;
 
-            if( this -> valid_data_count_ == 0) return 0;
+    std::size_t i = 0;
 
-            double sum = 0;
+    while (i < N - 1) {
+        // we keep moving the left pointer until we have found valid data
+        while (i < N && data[i] == -1) ++i;
 
-            for(std::size_t i = 0; i< this -> data_element_size_; ++i){
+        std::size_t j = i + 1;
 
-                if(data[i] == -1) continue; //skipping invalid elements
+        // we keep moving the right pointer until we have found valid data
+        while (j < N && data[j] == -1) ++j;
 
-                sum += data[i]; //adding all the valid elements together
-            }
+        //if we are trying to compare past the array then we break
+        if (j >= N) break;
 
-            return sum / this -> valid_data_count_;  
-        }
+        // these are the flags that tell us if we are strictly increasing or decreasing
+        if (data[i] > data[j]) strictly_increasing_flag = false;
+        if (data[i] < data[j]) strictly_decreasing_flag = false;
 
-        bool is_monotonic() {
-            if (this->valid_data_count_ == 0) return false;
+        //moving the left pointer to the next valid right pointer's position
+        i = j;
+    }
 
-            bool strictly_increasing_flag = true;
-            bool strictly_decreasing_flag = true;
-            std::size_t N = this->data_element_size_;
-            
-            std::size_t i = 0;
+    return strictly_decreasing_flag || strictly_increasing_flag;
+}
 
-            while (i < N - 1) {
-                // we keep moving the left pointer until we have found valid data
-                while (i < N && data[i] == -1) ++i;
+void TimeSeries::best_fit(double &m, double &b) {
+    assert(this->years_array_size_ == this->data_array_size_ && "years and data are not in pairs");
 
-                std::size_t j = i + 1;
+    std::size_t N = this->years_array_size_;
 
-                // we keep moving the right pointer until we have found valid data
-                while (j < N && data[j] == -1) ++j;
-                
-                //if we are trying to compare past the array then we break
-                if (j >= N) break;
-                
-                // these are the flags that tell us if we are strictly increasing or decreasing
-                if (data[i] > data[j]) strictly_increasing_flag = false;
-                if (data[i] < data[j]) strictly_decreasing_flag = false;
+    //if we have no valid data then we simply set the m and b to be zer
+    if (this->valid_data_count_ == 0) {
+        m = 0;
+        b = 0;
+    }
+    int year_sum = 0;
 
-                //moving the left pointer to the next valid right pointer's position
-                i = j; 
-            }
+    for (std::size_t i = 0; i < N; ++i) {
+        //there is no need to check for invalid years since years will always be valid
+        year_sum += years[i];
+    }
 
-            return strictly_decreasing_flag || strictly_increasing_flag;
-        }
+    int data_sum = 0;
 
+    for (std::size_t i = 0; i < N; ++i) {
+        if (data[i] == -1) continue;
+        data_sum += data[i];
+    }
 
-        void best_fit(double &m, double &b) {
+    int year_year_sum = 0;
 
-            assert ( this -> years_element_size_ == this -> data_element_size_ && "years and data are not in pairs");
+    for (std::size_t i = 0; i < N; ++i) {
+        year_year_sum += years[i] * years[i];
+    }
 
-            std::size_t N = this -> years_element_size_; 
-            
-            //if we have no valid data then we simply set the m and b to be zer 
-            if ( this -> valid_data_count_ == 0) {
-                m = 0;
-                b = 0;
-            }
-            int year_sum = 0;
+    int data_year_sum = 0;
 
-            for (std::size_t i = 0; i < N; ++i){
-                //there is no need to check for invalid years since years will always be valid
-                year_sum += years[i]; 
-            }
+    // data_array_size_ should be the same size as the years_element_count since they are pairs
+    for (std::size_t i = 0; i < N; ++i) {
+        if (data[i] == -1) continue;
+        data_year_sum += years[i] * data[i];
+    }
 
-            int data_sum = 0;
+    double m_term_1 = N * data_year_sum;
+    double m_term_2 = data_sum * year_sum;
+    double m_term_3 = N * year_year_sum;
+    double m_term_4 = year_year_sum;
 
-            for (std::size_t i = 0; i < N; ++i){
-                if (data[i] == -1) continue;
-                data_sum += data[i];
-            }
+    // ensuring that there is no division by zero
+    assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope");
 
-            int year_year_sum = 0; 
+    m = (m_term_1 - m_term_2) / (m_term_3 - m_term_4);
 
-            for (std::size_t i = 0; i < N; ++i){
-                year_year_sum += years[i] * years[i];
-            }
+    double b_term_1 = data_sum;
+    double b_term_2 = m * year_sum;
+    double b_term_3 = N;
 
-            int data_year_sum = 0;
+    // asserting that we
+    assert(b_term_3 && "divide by zero for y intercept");
 
-            // data_element_size_ should be the same size as the years_element_count since they are pairs
-            for ( std::size_t i = 0; i < N; ++i){
-                if (data[i] == -1) continue;
-                data_year_sum += years[i] * data[i];
-            }
+    b = (b_term_1 - b_term_2) / b_term_3;
+}
 
-            double m_term_1 = N * data_year_sum;
-            double m_term_2 = data_sum * year_sum;
-            double m_term_3 = N * year_year_sum;
-            double m_term_4 = year_year_sum;
+void TimeSeries::IncreaseSize(int*& arr, uint size, uint &capacity) {
+    // don't needa do anything if the capacity is not equal to the size
+    if (size != capacity) return;
 
-            // ensuring that there is no division by zero
-            assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope"); 
+    //we needa basically take all the elements of the arr and then copy it into a new array
+    // then delete the old array and take the pointer arr, and attach that to the new array
+    // and set the new array's pointer to nullptr
+    int* new_arr = new int[capacity * 2];
+    for (std::size_t i = 0; i < capacity; ++i) {
+        new_arr[i] = arr[i]; // putting in all the existing elements into new array
+    }
+    capacity *= 2;
+    delete[] arr;
 
-            m = (m_term_1 - m_term_2)/(m_term_3 - m_term_4);
+    arr = new_arr;
+    assert(arr == new_arr);
+}
 
-            double b_term_1 = data_sum;
-            double b_term_2 = m * year_sum;
-            double b_term_3 = N;
-            
-            // asserting that we 
-            assert(b_term_3 && "divide by zero for y intercept"); 
+void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
+    double ratio = capacity / 4;
+    if (size != ratio) return;
+    if (capacity / 2 < 2) return;
 
-            b = (b_term_1 - b_term_2) / b_term_3;
+    capacity /= 2;
 
-        }    
-    private:
-        //these values are gonna be the ones that tell me to increase sizing or decreasse sizing
-            uint years_element_size_ = 0; 
-            uint years_array_capacity_ = 2;
-            uint data_element_size_ = 0;
-            uint valid_data_count_ = 0;
-            uint data_array_capacity_ = 2;
-        ///////////////////////////////////////////////////////////////////////////////////////
-        
-        void IncreaseSize(int*& arr) {
+    assert(capacity > size);
 
-        }
+    int *new_arr = new int[capacity];
 
-        void DecreaseSize(int*& arr ) {
+    for(std::size_t i = 0; i < size; ++i) {
+        new_arr[i] = arr[i];
+    }
 
-        }
+    delete[] arr;
+    arr = new_arr;
+    assert(arr == new_arr);
+}
 
-        void Push(int value, int*& arr){
+void TimeSeries::Push(int value, int*& arr) {
 
-        }
-
-};
+}

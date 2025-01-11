@@ -1,24 +1,31 @@
-#ifdef TIMESERIES_H
+#ifndef TIMESERIES_H
 #define TIMESERIES_H
-#include <iostream>
+
+#include <sys/types.h>
+#include <bits/c++config.h>
+
 class TimeSeries {
-    public:
-        //constructor for the class 
-        TimeSeries(); 
+public:
+    TimeSeries();
+    ~TimeSeries();
 
-        // destructor for the class
-        ~TimeSeries(); 
-        
-        //Computes the standard mean of all the valid(not missing) data
-        double mean(); 
+    double mean();
+    bool is_monotonic();
+    void best_fit(double &m, double &b);
 
-        //Returns true if the series is monotonic and false otherwise
-        bool is_monotonic();
-        
-        //computes the slope and y intercept of the line of best fit for the data
-        void best_fit(double &m, double &b);
-
-    private:
-    
+private:
+    uint* years;
+    int* data;
+    double m;
+    double b;
+    uint years_array_size_;
+    uint years_array_capacity_;
+    uint data_array_size_;
+    uint valid_data_count_;
+    uint data_array_capacity_;
+    void IncreaseSize(int*& arr, uint size, uint &capacity);
+    void DecreaseSize(int*& arr, uint size, uint &capacity); 
+    void Push(int value, int*& arr);
 };
+
 #endif
