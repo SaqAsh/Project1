@@ -1,7 +1,6 @@
 #ifdef TIMESERIES_H
 #define TIMESERIES_H
 #include <iostream>
-
 class TimeSeries {
     public:
         //constructor for the class 
