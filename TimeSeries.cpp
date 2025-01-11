@@ -176,23 +176,40 @@ void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
 void TimeSeries::Push(int value, int*& arr, uint &size, uint &capacity) {
     //Will Increase size if needed
     TimeSeries::IncreaseSize(arr, size, capacity);
-    // Add the value to the end of the array
+    // Add the value to the end of the array and increment the count
     arr[size++] = value;
 }
 
-void TimeSeries::LOAD(std::string file_name){
-    std::ifstream file(file_name); //opens the file
-    std::string line; // declare the string that when using get line will read the string into this string
-    while (std::getline(file, line)) { 
-        std::stringstream s_stream(line); // using the string, we use the std::stringstream to create a string stream
-        std::string component; //we declare another string that will be passed into the get line to get the component
+void TimeSeries::LOAD(std::string file_name) {
+    std::ifstream file(file_name); 
+    std::string line;
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << file_name << "\n";
+        return;
+    }
+
+    while (std::getline(file, line)) {
+        std::stringstream s_stream(line);
+        std::string component;
+
+        std::getline(s_stream, component, ',');
+
+        std::getline(s_stream, component, ',');
+
+        std::getline(s_stream, series_name, ',');
+
+        std::getline(s_stream, series_code, ',');
 
         while (std::getline(s_stream, component, ',')) {
-            std::cout << component << "\n";  // we print the component with a new line at the end
+            Push(std::stoi(component), data, data_array_size_, data_array_capacity_);
         }
     }
-    file.close(); 
+
+    file.close();
 }
+
+
 void TimeSeries::ADD(uint Y, int D){
     for(std::size_t i = 0; i < data_array_size_; ++i){
         //invalid data in the position
