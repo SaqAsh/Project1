@@ -1,4 +1,3 @@
-
 #ifdef RESIZEABLEARRAY_H
 #define RESIZEABLEARRAY_H
 #include <iostream>
@@ -9,5 +8,5 @@ class ResizeableArray {
         ~ResizeableArray(); // destructor for the class
     private:
     
-}
+};
 #endif

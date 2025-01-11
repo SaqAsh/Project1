@@ -1,2 +1,2 @@
-all: main.cpp
-	g++ -g -std=c++17 main.cpp
+all: InputHandler.cpp ResizeableArray.cpp TimeSeries.cpp
+	g++ -g -std=c++17 InputHandler.cpp ResizeableArray.cpp TimeSeries.cpp

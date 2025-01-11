@@ -1,14 +1,23 @@
-#include "ResizeableArray.h"
-
-class ResizeableArray {
+#include "TimeSeries.h"
+class TimeSeries {
 
     public:
+    
+        TimeSeries(){
 
-        ResizeableArray(){
+        }
+
+        ~TimeSeries() {
 
         }
 
-        ~ResizeableArray() {
-
+        double mean() {
         }
-}
+
+        bool is_monotonic() {
+            return true;
+        }
+
+        void best_fit(double &m, double &b) {
+        }    
+};
