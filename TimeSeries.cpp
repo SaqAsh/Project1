@@ -12,6 +12,7 @@ class TimeSeries {
         }
 
         double mean() {
+            
         }
 
         bool is_monotonic() {
