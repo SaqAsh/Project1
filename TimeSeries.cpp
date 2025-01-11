@@ -24,7 +24,12 @@ class TimeSeries {
         }
 
         ~TimeSeries() {
-
+            delete[] years; 
+            years = nullptr;
+            delete[] data;
+            data = nullptr;
+            assert(data == nullptr);
+            assert(years == nullptr);
         }
 
         double mean() {
@@ -33,7 +38,7 @@ class TimeSeries {
 
             double sum = 0;
 
-            for(std::size_t i = 0; i< this -> data_element_count_; ++i){
+            for(std::size_t i = 0; i< this -> data_element_size_; ++i){
 
                 if(data[i] == -1) continue; //skipping invalid elements
 
@@ -44,29 +49,43 @@ class TimeSeries {
         }
 
         bool is_monotonic() {
-            
-            if(this -> valid_data_count_ == 0) return false;
-            //assuming that the series is monotonic
+            if (this->valid_data_count_ == 0) return false;
+
             bool strictly_increasing_flag = true;
             bool strictly_decreasing_flag = true;
-            std::size_t N = this -> data_element_count_;
+            std::size_t N = this->data_element_size_;
             
-            // we haven't accounted for skipping the invalid data
+            std::size_t i = 0;
 
-            for ( std::size_t i = 0; i < N-1; ++i ){ 
+            while (i < N - 1) {
+                // we keep moving the left pointer until we have found valid data
+                while (i < N && data[i] == -1) ++i;
+
                 std::size_t j = i + 1;
-                if ( data[i] > data[j]) strictly_increasing_flag = false;
-                if ( data[i] < data[j]) strictly_decreasing_flag = false;
+
+                // we keep moving the right pointer until we have found valid data
+                while (j < N && data[j] == -1) ++j;
+                
+                //if we are trying to compare past the array then we break
+                if (j >= N) break;
+                
+                // these are the flags that tell us if we are strictly increasing or decreasing
+                if (data[i] > data[j]) strictly_increasing_flag = false;
+                if (data[i] < data[j]) strictly_decreasing_flag = false;
+
+                //moving the left pointer to the next valid right pointer's position
+                i = j; 
             }
 
-            return strictly_decreasing_flag || strictly_increasing_flag ;
+            return strictly_decreasing_flag || strictly_increasing_flag;
         }
+
 
         void best_fit(double &m, double &b) {
 
-            assert ( this -> years_element_count_ == this -> data_element_count_ && "years and data are not in pairs");
+            assert ( this -> years_element_size_ == this -> data_element_size_ && "years and data are not in pairs");
 
-            std::size_t N = this -> years_element_count_; 
+            std::size_t N = this -> years_element_size_; 
             
             //if we have no valid data then we simply set the m and b to be zer 
             if ( this -> valid_data_count_ == 0) {
@@ -95,7 +114,7 @@ class TimeSeries {
 
             int data_year_sum = 0;
 
-            // data_element_count_ should be the same size as the years_element_count since they are pairs
+            // data_element_size_ should be the same size as the years_element_count since they are pairs
             for ( std::size_t i = 0; i < N; ++i){
                 if (data[i] == -1) continue;
                 data_year_sum += years[i] * data[i];
@@ -123,11 +142,11 @@ class TimeSeries {
         }    
     private:
         //these values are gonna be the ones that tell me to increase sizing or decreasse sizing
-            uint years_element_count_ = 0; 
-            uint years_array_size_ = 2;
-            uint data_element_count_ = 0;
+            uint years_element_size_ = 0; 
+            uint years_array_capacity_ = 2;
+            uint data_element_size_ = 0;
             uint valid_data_count_ = 0;
-            uint data_array_size = 2;
+            uint data_array_capacity_ = 2;
         ///////////////////////////////////////////////////////////////////////////////////////
         
         void IncreaseSize(int*& arr) {
