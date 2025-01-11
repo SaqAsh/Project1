@@ -100,9 +100,6 @@ class TimeSeries {
 
             b = (b_term_1 - b_term_2) / b_term_3;
 
-            //not else we gotta do a lot of operations to figure out what the best fit line values are, thus we use a helper function 
-            // called sum elements
-
         }    
     private:
         //these values are gonna be the ones that tell me to increase sizing or decreasse sizing
