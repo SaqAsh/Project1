@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <bits/c++config.h>
 #include <cassert>
+#include <iostream>
 
 uint* years;
 int* data;
@@ -168,6 +169,22 @@ void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
     assert(arr == new_arr);
 }
 
-void TimeSeries::Push(int value, int*& arr) {
+void TimeSeries::Push(int value, int*& arr, uint size, uint &capacity ) {
+    
+}
 
+void TimeSeries::LOAD(std::string file_name){
+
+}
+void TimeSeries::ADD(uint Y, int D){
+
+}
+void TimeSeries::UPDATE(uint Y, int D){
+
+}
+void TimeSeries::PRINT() {
+    if( this -> valid_data_count_ == 0) std::cout<<"failure";
+    for (std::size_t i = 0; i < this -> data_array_size_; ++i){
+        std::cout<<"("<<years[i]<<","<<data[i]<<")";
+    }
 }

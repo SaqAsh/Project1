@@ -3,6 +3,7 @@
 
 #include <sys/types.h>
 #include <bits/c++config.h>
+#include <string>
 
 class TimeSeries {
 public:
@@ -12,6 +13,10 @@ public:
     double mean();
     bool is_monotonic();
     void best_fit(double &m, double &b);
+    void LOAD(std::string file_name);
+    void ADD(uint Y, int D);
+    void UPDATE(uint Y, int D);
+    void PRINT();
 
 private:
     uint* years;
@@ -25,7 +30,7 @@ private:
     uint data_array_capacity_;
     void IncreaseSize(int*& arr, uint size, uint &capacity);
     void DecreaseSize(int*& arr, uint size, uint &capacity); 
-    void Push(int value, int*& arr);
+    void Push(int value, int*& arr, uint size, uint &capacity );
 };
 
 #endif
