@@ -30,7 +30,8 @@ private:
     uint data_array_capacity_;
     void IncreaseSize(int*& arr, uint size, uint &capacity);
     void DecreaseSize(int*& arr, uint size, uint &capacity); 
-    void Push(int value, int*& arr, uint size, uint &capacity );
+    void Push(int value, int*& arr, uint size, uint &capacity);
+    void Push(int value, uint* &arr, uint size, uint &capacity);
 };
 
 #endif

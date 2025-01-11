@@ -172,15 +172,41 @@ void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
 void TimeSeries::Push(int value, int*& arr, uint size, uint &capacity ) {
     
 }
-
-void TimeSeries::LOAD(std::string file_name){
+void TimeSeries::Push(int value, uint* &arr, uint size, uint &capacity){
 
 }
+
+void TimeSeries::LOAD(std::string file_name){
+    
+}
 void TimeSeries::ADD(uint Y, int D){
+    for(std::size_t i = 0; i < data_array_size_; ++i){
+        //invalid data in the position
+        if (years[i] == Y && data[i] == -1){
+            data[i] = D;
+            ++ this ->valid_data_count_;
+            std::cout<<"success"<<"\n";
+            return;
+        }
+        if (years[i] == Y && data[i] != -1){
+            std::cout << "failure" << "\n";
+            return;
+        }
+    }
+    //adding to the end of the list
+    TimeSeries::Push(D, data, data_array_size_, data_array_capacity_);
+    TimeSeries::Push(Y, years, years_array_size_, years_array_capacity_);
 
 }
 void TimeSeries::UPDATE(uint Y, int D){
-
+    for(std::size_t i = 0; i < data_array_size_; ++i){
+        if(years[i] == Y && data[i] != -1){
+            data[i] = D;
+            std::cout<<"success"<<"\n";
+            return;
+        }
+    }
+    std::cout<<"failure"<<"\n";
 }
 void TimeSeries::PRINT() {
     if( this -> valid_data_count_ == 0) std::cout<<"failure";
