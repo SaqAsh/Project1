@@ -68,11 +68,10 @@ class TimeSeries {
                 data_sum += data[i];
             }
 
-            int data_data_sum = 0; 
+            int year_year_sum = 0; 
 
-            for (std::size_t i = 0; i < this -> data_element_count_; ++i){
-                if (data[i] == -1) continue;
-                data_data_sum += data[i] * data[i];
+            for (std::size_t i = 0; i < this -> years_element_count_; ++i){
+                year_year_sum += years[i] * years[i];
             }
 
             int data_year_sum = 0;
@@ -82,18 +81,20 @@ class TimeSeries {
                 if (data[i] == -1) continue;
                 data_year_sum += years[i] * data[i];
             }
-            double m_term_1;
-            double m_term_2;
-            double m_term_3;
-            double m_term_4;
 
-            assert((m_term_3 - m_term_4) != 0);
+            double N = this -> years_element_count_; 
+            double m_term_1 = N * data_year_sum;
+            double m_term_2 = data_sum * year_sum;
+            double m_term_3 = N * year_year_sum;
+            double m_term_4 = year_year_sum;
+
+            assert((m_term_3 - m_term_4) != 0); // ensuring that there is no division by zero
 
             m = (m_term_1 - m_term_2)/(m_term_3 - m_term_4);
 
-            double b_term_1;
-            double b_term_2;
-            double b_term_3;
+            double b_term_1 = data_sum;
+            double b_term_2 = m * year_sum;
+            double b_term_3 = N;
 
             assert(b_term_3); // asserting that we 
 
