@@ -3,14 +3,18 @@
 #include <bits/c++config.h>
 #include <cassert>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 uint* years;
 int* data;
 double m;
 double b;
+std::string series_name;
+std::string series_code;
 
 TimeSeries::TimeSeries() {
-    years = new uint[2];
+    years = new int[2];
     this->years_array_capacity_ = 2;
     this->years_array_size_ = 0;
     data = new int[2];
@@ -169,15 +173,25 @@ void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
     assert(arr == new_arr);
 }
 
-void TimeSeries::Push(int value, int*& arr, uint size, uint &capacity ) {
-    
-}
-void TimeSeries::Push(int value, uint* &arr, uint size, uint &capacity){
-
+void TimeSeries::Push(int value, int*& arr, uint &size, uint &capacity) {
+    //Will Increase size if needed
+    TimeSeries::IncreaseSize(arr, size, capacity);
+    // Add the value to the end of the array
+    arr[size++] = value;
 }
 
 void TimeSeries::LOAD(std::string file_name){
-    
+    std::ifstream file(file_name); //opens the file
+    std::string line; // declare the string that when using get line will read the string into this string
+    while (std::getline(file, line)) { 
+        std::stringstream s_stream(line); // using the string, we use the std::stringstream to create a string stream
+        std::string component; //we declare another string that will be passed into the get line to get the component
+
+        while (std::getline(s_stream, component, ',')) {
+            std::cout << component << "\n";  // we print the component with a new line at the end
+        }
+    }
+    file.close(); 
 }
 void TimeSeries::ADD(uint Y, int D){
     for(std::size_t i = 0; i < data_array_size_; ++i){

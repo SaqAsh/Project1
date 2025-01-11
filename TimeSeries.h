@@ -19,10 +19,12 @@ public:
     void PRINT();
 
 private:
-    uint* years;
+    int* years;
     int* data;
     double m;
     double b;
+    std::string series_name;
+    std::string series_code;
     uint years_array_size_;
     uint years_array_capacity_;
     uint data_array_size_;
@@ -30,8 +32,7 @@ private:
     uint data_array_capacity_;
     void IncreaseSize(int*& arr, uint size, uint &capacity);
     void DecreaseSize(int*& arr, uint size, uint &capacity); 
-    void Push(int value, int*& arr, uint size, uint &capacity);
-    void Push(int value, uint* &arr, uint size, uint &capacity);
+    void Push(int value, int*& arr, uint &size, uint &capacity); 
 };
 
 #endif
