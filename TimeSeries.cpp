@@ -44,14 +44,30 @@ class TimeSeries {
         }
 
         bool is_monotonic() {
-            return true;
+            
+            if(this -> valid_data_count_ == 0) return false;
+            //assuming that the series is monotonic
+            bool strictly_increasing_flag = true;
+            bool strictly_decreasing_flag = true;
+            std::size_t N = this -> data_element_count_;
+            
+            // we haven't accounted for skipping the invalid data
+
+            for ( std::size_t i = 0; i < N-1; ++i ){ 
+                std::size_t j = i + 1;
+                if ( data[i] > data[j]) strictly_increasing_flag = false;
+                if ( data[i] < data[j]) strictly_decreasing_flag = false;
+            }
+
+            return strictly_decreasing_flag || strictly_increasing_flag ;
         }
 
         void best_fit(double &m, double &b) {
 
             assert ( this -> years_element_count_ == this -> data_element_count_ && "years and data are not in pairs");
 
-            double N = this -> years_element_count_; 
+            std::size_t N = this -> years_element_count_; 
+            
             //if we have no valid data then we simply set the m and b to be zer 
             if ( this -> valid_data_count_ == 0) {
                 m = 0;
@@ -60,7 +76,8 @@ class TimeSeries {
             int year_sum = 0;
 
             for (std::size_t i = 0; i < N; ++i){
-                year_sum += years[i]; //there is no need to check for invalid years since years will always be valid
+                //there is no need to check for invalid years since years will always be valid
+                year_sum += years[i]; 
             }
 
             int data_sum = 0;
@@ -89,15 +106,17 @@ class TimeSeries {
             double m_term_3 = N * year_year_sum;
             double m_term_4 = year_year_sum;
 
-            assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope"); // ensuring that there is no division by zero
+            // ensuring that there is no division by zero
+            assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope"); 
 
             m = (m_term_1 - m_term_2)/(m_term_3 - m_term_4);
 
             double b_term_1 = data_sum;
             double b_term_2 = m * year_sum;
             double b_term_3 = N;
-
-            assert(b_term_3 && "divide by zero for y intercept"); // asserting that we 
+            
+            // asserting that we 
+            assert(b_term_3 && "divide by zero for y intercept"); 
 
             b = (b_term_1 - b_term_2) / b_term_3;
 
