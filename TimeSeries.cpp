@@ -6,7 +6,7 @@
 #include <sstream>
 #include <fstream>
 
-uint* years;
+int* years;
 int* data;
 double m;
 double b;
@@ -187,7 +187,7 @@ void TimeSeries::LOAD(std::string file_name) {
     while (std::getline(file, line)) {
         std::stringstream s_stream(line);
         std::string component;
-
+        int year = 1960;
         std::getline(s_stream, component, ',');
 
         std::getline(s_stream, component, ',');
@@ -197,7 +197,8 @@ void TimeSeries::LOAD(std::string file_name) {
         std::getline(s_stream, series_code, ',');
 
         while (std::getline(s_stream, component, ',')) {
-            Push(std::stoi(component), data, data_array_size_, data_array_capacity_);
+            Push(std::stoi(component), data, data_array_size_, data_array_capacity_); // here we are casting a string into an int to actually get the numbers into a number format
+            Push(year++, years, years_array_size_, years_array_capacity_); // no need to cast to a number, we are simply just pushing in the years
         }
     }
 
