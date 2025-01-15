@@ -98,7 +98,7 @@ void TimeSeries::best_fit(double &m, double &b) {
     double m_term_1 = N * data_year_sum;
     double m_term_2 = data_sum * year_sum;
     double m_term_3 = N * year_year_sum;
-    double m_term_4 = year_sum * year_sum; // Fixed this term
+    double m_term_4 = year_sum * year_sum; 
 
     // Ensure no division by zero in slope calculation
     assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope");
