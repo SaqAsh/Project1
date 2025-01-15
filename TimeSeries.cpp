@@ -15,12 +15,12 @@ std::string series_code;
 
 TimeSeries::TimeSeries() {
     years = new int[2];
-    this->years_array_capacity_ = 2;
-    this->years_array_size_ = 0;
+    years_array_capacity_ = 2;
+    years_array_size_ = 0;
     data = new int[2];
-    this->data_array_capacity_ = 2;
-    this->data_array_size_ = 0;
-    this->valid_data_count_ = 0;
+    data_array_capacity_ = 2;
+    data_array_size_ = 0;
+    valid_data_count_ = 0;
 }
 
 TimeSeries::~TimeSeries() {
@@ -33,24 +33,24 @@ TimeSeries::~TimeSeries() {
 }
 
 double TimeSeries::mean() {
-    if (this->valid_data_count_ == 0) return 0;
+    if (valid_data_count_ == 0) return 0;
 
     double sum = 0;
 
-    for (std::size_t i = 0; i < this->data_array_size_; ++i) {
+    for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue; //skipping invalid elements
         sum += data[i]; //adding all the valid elements together
     }
 
-    return sum / this->valid_data_count_;
+    return sum / valid_data_count_;
 }
 
 bool TimeSeries::is_monotonic() {
-    if (this->valid_data_count_ == 0) return false;
+    if (valid_data_count_ == 0) return false;
 
     bool strictly_increasing_flag = true;
     bool strictly_decreasing_flag = true;
-    std::size_t N = this->data_array_size_;
+    std::size_t N = data_array_size_;
 
     std::size_t i = 0;
 
@@ -78,12 +78,12 @@ bool TimeSeries::is_monotonic() {
 }
 
 void TimeSeries::best_fit(double &m, double &b) {
-    assert(this->years_array_size_ == this->data_array_size_ && "years and data are not in pairs");
+    assert(years_array_size_ == this->data_array_size_ && "years and data are not in pairs");
 
-    std::size_t N = this->years_array_size_;
+    std::size_t N = years_array_size_;
 
     //if we have no valid data then we simply set the m and b to be zer
-    if (this->valid_data_count_ == 0) {
+    if (valid_data_count_ == 0) {
         m = 0;
         b = 0;
     }
@@ -183,11 +183,6 @@ void TimeSeries::Push(int value, int*& arr, uint &size, uint &capacity) {
 void TimeSeries::LOAD(std::string file_name) {
     std::ifstream file(file_name); 
     std::string line;
-
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file: " << file_name << "\n";
-        return;
-    }
 
     while (std::getline(file, line)) {
         std::stringstream s_stream(line);
