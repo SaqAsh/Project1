@@ -66,6 +66,7 @@ int main() {
         std::cin >> command;
 
         if (command == "EXIT") {
+            delete time_series;
             return 0;
         }
         else if (command == "LOAD") {
@@ -90,6 +91,6 @@ int main() {
             HandleFit(time_series); 
         }
     }
-
+    delete time_series;
     return 0;
 }
