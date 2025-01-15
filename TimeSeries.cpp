@@ -78,7 +78,7 @@ bool TimeSeries::is_monotonic() {
 }
 
 void TimeSeries::best_fit(double &m, double &b) {
-    assert(years_array_size_ == this->data_array_size_ && "years and data are not in pairs");
+    assert(years_array_size_ == data_array_size_ && "years and data are not in pairs");
 
     std::size_t N = years_array_size_;
 
@@ -90,7 +90,7 @@ void TimeSeries::best_fit(double &m, double &b) {
     int year_sum = 0;
 
     for (std::size_t i = 0; i < N; ++i) {
-        //there is no need to check for invalid years since years will always be valid
+        if (data[i] == -1) continue;
         year_sum += years[i];
     }
 
@@ -104,6 +104,7 @@ void TimeSeries::best_fit(double &m, double &b) {
     int year_year_sum = 0;
 
     for (std::size_t i = 0; i < N; ++i) {
+        if (data[i] == -1) continue;
         year_year_sum += years[i] * years[i];
     }
 
@@ -217,7 +218,7 @@ void TimeSeries::ADD(uint Y, int D){
         //invalid data in the position
         if (years[i] == Y && data[i] == -1){
             data[i] = D;
-            ++ this ->valid_data_count_;
+            ++ valid_data_count_;
             std::cout<<"success"<<"\n";
             return;
         }
@@ -242,8 +243,8 @@ void TimeSeries::UPDATE(uint Y, int D){
     std::cout<<"failure"<<"\n";
 }
 void TimeSeries::PRINT() {
-    if( this -> valid_data_count_ == 0) std::cout<<"failure";
-    for (std::size_t i = 0; i < this -> data_array_size_; ++i){
+    if ( valid_data_count_ == 0) std::cout<<"failure";
+    for (std::size_t i = 0; i <  data_array_size_; ++i){
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
     }
 }
