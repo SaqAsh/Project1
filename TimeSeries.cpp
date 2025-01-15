@@ -82,27 +82,16 @@ void TimeSeries::best_fit(double &m, double &b) {
         return;
     }
 
+    int data_sum = 0;
     int year_sum = 0;
+    int data_year_sum = 0;
+    int year_year_sum = 0;
+
     for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         year_sum += years[i];
-    }
-
-    int data_sum = 0;
-    for (std::size_t i = 0; i < data_array_size_; ++i) {
-        if (data[i] == -1) continue;
         data_sum += data[i];
-    }
-
-    int year_year_sum = 0;
-    for (std::size_t i = 0; i < data_array_size_; ++i) {
-        if (data[i] == -1) continue;
         year_year_sum += years[i] * years[i];
-    }
-
-    int data_year_sum = 0;
-    for (std::size_t i = 0; i < data_array_size_; ++i) {
-        if (data[i] == -1) continue;
         data_year_sum += years[i] * data[i];
     }
 
