@@ -82,7 +82,7 @@ void TimeSeries::best_fit(double &m, double &b) {
 
     std::size_t N = years_array_size_;
 
-    //if we have no valid data then we simply set the m and b to be zer
+    //if we have no valid data then we simply set the m and b to be zero
     if (valid_data_count_ == 0) {
         m = 0;
         b = 0;
@@ -247,4 +247,5 @@ void TimeSeries::PRINT() {
     for (std::size_t i = 0; i <  data_array_size_; ++i){
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
     }
+    std::cout<<"\n";
 }
