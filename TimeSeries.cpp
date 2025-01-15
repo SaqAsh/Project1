@@ -245,6 +245,7 @@ void TimeSeries::UPDATE(uint Y, int D){
 void TimeSeries::PRINT() {
     if ( valid_data_count_ == 0) std::cout<<"failure";
     for (std::size_t i = 0; i <  data_array_size_; ++i){
+        if(data[i] == -1) continue;
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
     }
     std::cout<<"\n";
