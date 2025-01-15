@@ -2,9 +2,9 @@
 
 #include <string>
 #include "TimeSeries.h"  
-void HandleLoad (bool first_load, TimeSeries *&t_series){
+void HandleLoad(bool &first_load, TimeSeries *&t_series) {
     std::string file_name;
-    if(std::cin>> file_name){
+    if (std::cin >> file_name) {
         if (first_load) {
             first_load = false;
         } else {
@@ -16,6 +16,7 @@ void HandleLoad (bool first_load, TimeSeries *&t_series){
     t_series->LOAD(file_name);
     std::cout << "success" << "\n";
 }
+
 
 void HandleAdd(TimeSeries *t_series){
     unsigned int Y;

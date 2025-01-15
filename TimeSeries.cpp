@@ -6,18 +6,11 @@
 #include <sstream>
 #include <fstream>
 
-int* years;
-int* data;
-double m;
-double b;
-std::string series_name;
-std::string series_code;
-
 TimeSeries::TimeSeries() {
-    years = new int[2];
+    years = new int[2];  
     years_array_capacity_ = 2;
     years_array_size_ = 0;
-    data = new int[2];
+    data = new int[2];   
     data_array_capacity_ = 2;
     data_array_size_ = 0;
     valid_data_count_ = 0;
@@ -80,38 +73,35 @@ bool TimeSeries::is_monotonic() {
 void TimeSeries::best_fit(double &m, double &b) {
     assert(years_array_size_ == data_array_size_ && "years and data are not in pairs");
 
-    std::size_t N = years_array_size_;
+    std::size_t N = valid_data_count_;
 
-    //if we have no valid data then we simply set the m and b to be zero
+    // If no valid data, set m and b to zero
     if (valid_data_count_ == 0) {
         m = 0;
         b = 0;
+        return;
     }
-    int year_sum = 0;
 
-    for (std::size_t i = 0; i < N; ++i) {
+    int year_sum = 0;
+    for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         year_sum += years[i];
     }
 
     int data_sum = 0;
-
-    for (std::size_t i = 0; i < N; ++i) {
+    for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         data_sum += data[i];
     }
 
     int year_year_sum = 0;
-
-    for (std::size_t i = 0; i < N; ++i) {
+    for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         year_year_sum += years[i] * years[i];
     }
 
     int data_year_sum = 0;
-
-    // data_array_size_ should be the same size as the years_element_count since they are pairs
-    for (std::size_t i = 0; i < N; ++i) {
+    for (std::size_t i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         data_year_sum += years[i] * data[i];
     }
@@ -119,22 +109,21 @@ void TimeSeries::best_fit(double &m, double &b) {
     double m_term_1 = N * data_year_sum;
     double m_term_2 = data_sum * year_sum;
     double m_term_3 = N * year_year_sum;
-    double m_term_4 = year_year_sum;
+    double m_term_4 = year_sum * year_sum; // Fixed this term
 
-    // ensuring that there is no division by zero
+    // Ensure no division by zero in slope calculation
     assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope");
-
     m = (m_term_1 - m_term_2) / (m_term_3 - m_term_4);
 
     double b_term_1 = data_sum;
     double b_term_2 = m * year_sum;
     double b_term_3 = N;
 
-    // asserting that we
-    assert(b_term_3 && "divide by zero for y intercept");
-
+    // Ensure no division by zero in intercept calculation
+    assert(b_term_3 != 0 && "divide by zero for y intercept");
     b = (b_term_1 - b_term_2) / b_term_3;
 }
+
 
 void TimeSeries::IncreaseSize(int*& arr, uint size, uint &capacity) {
     // don't needa do anything if the capacity is not equal to the size
