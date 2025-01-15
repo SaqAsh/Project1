@@ -175,6 +175,7 @@ void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
 
 void TimeSeries::Push(int value, int*& arr, uint &size, uint &capacity) {
     //Will Increase size if needed
+
     TimeSeries::IncreaseSize(arr, size, capacity);
     // Add the value to the end of the array and increment the count
     arr[size++] = value;
@@ -197,7 +198,12 @@ void TimeSeries::LOAD(std::string file_name) {
         std::getline(s_stream, series_code, ',');
 
         while (std::getline(s_stream, component, ',')) {
-            Push(std::stoi(component), data, data_array_size_, data_array_capacity_); // here we are casting a string into an int to actually get the numbers into a number format
+            int data_sample = std::stoi(component);
+
+            if(data_sample != -1) ++valid_data_count_;
+
+            Push(data_sample, data, data_array_size_, data_array_capacity_); // here we are casting a string into an int to actually get the numbers into a number format
+
             Push(year++, years, years_array_size_, years_array_capacity_); // no need to cast to a number, we are simply just pushing in the years
         }
     }
