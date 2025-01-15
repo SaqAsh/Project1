@@ -212,13 +212,15 @@ void TimeSeries::ADD(uint Y, int D){
             return;
         }
         if (years[i] == Y && data[i] != -1){
-            std::cout << "failure" << "\n";
+            std::cout << "failure"<<"\n";
             return;
         }
     }
     //adding to the end of the list
     TimeSeries::Push(D, data, data_array_size_, data_array_capacity_);
     TimeSeries::Push(Y, years, years_array_size_, years_array_capacity_);
+    ++valid_data_count_;
+    std::cout<<"success"<<"\n";
 
 }
 void TimeSeries::UPDATE(uint Y, int D){
@@ -232,7 +234,7 @@ void TimeSeries::UPDATE(uint Y, int D){
     std::cout<<"failure"<<"\n";
 }
 void TimeSeries::PRINT() {
-    if ( valid_data_count_ == 0) std::cout<<"failure";
+    if ( valid_data_count_ == 0) std::cout<<"failure"<<"\n";
     for (std::size_t i = 0; i <  data_array_size_; ++i){
         if(data[i] == -1) continue;
         std::cout<<"("<<years[i]<<","<<data[i]<<")";

@@ -2,15 +2,11 @@
 
 #include <string>
 #include "TimeSeries.h"  
-void HandleLoad(bool &first_load, TimeSeries *&t_series) {
+void HandleLoad(TimeSeries *&t_series) {
     std::string file_name;
     if (std::cin >> file_name) {
-        if (first_load) {
-            first_load = false;
-        } else {
-            delete t_series;
-            t_series = new TimeSeries();  
-        }
+        delete t_series;
+        t_series = new TimeSeries();  
     }
 
     t_series->LOAD(file_name);
@@ -57,7 +53,6 @@ void HandleFit(TimeSeries *t_series){
 
 int main() {
 
-    bool first_load = true;  
     TimeSeries *time_series = new TimeSeries();          
 
     std::string command;
@@ -71,7 +66,7 @@ int main() {
             return 0;
         }
         else if (command == "LOAD") {
-            HandleLoad(first_load, time_series);
+            HandleLoad(time_series);
         }
         else if (command == "PRINT") {
             time_series->PRINT();
