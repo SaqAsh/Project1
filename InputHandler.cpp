@@ -32,10 +32,18 @@ void HandleUpdate(TimeSeries *t_series){
 
 void HandleMean(TimeSeries *t_series){
     double m = t_series->mean();
-    !m ? std::cout<<"failure" << std::endl : std::cout << "mean is " << m <<std::endl;
+    if(t_series->emptyDataSet()){
+        std::cout<<"failure" << std::endl;
+        return;
+    }   
+    std::cout << "mean is " << m <<std::endl;
 }
 
 void HandleMonotonic(TimeSeries *t_series){
+    if(t_series -> emptyDataSet()){
+        std::cout<<"failure" << std::endl;
+        return;
+    }
     t_series->is_monotonic() ? std::cout << "series is monotonic"<<std::endl : std::cout << "series is not monotonic"<<std::endl; 
 }
 

@@ -17,6 +17,7 @@ public:
     void ADD(uint Y, int D);
     void UPDATE(uint Y, int D);
     void PRINT();
+    bool emptyDataSet();
 
 private:
     int* years;

@@ -238,3 +238,7 @@ void TimeSeries::PRINT() {
 
     std::cout<<"\n";
 }
+
+bool TimeSeries::emptyDataSet() {
+    return valid_data_count_ == 0;
+}  
