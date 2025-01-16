@@ -50,12 +50,11 @@ void HandleMonotonic(TimeSeries *t_series){
 void HandleFit(TimeSeries *t_series){
     double slope, intercept;
 
-    t_series->best_fit(slope, intercept);
-
     if (t_series->emptyDataSet()){
         std::cout<<"failure" << std::endl;
         return;
     } else{
+        t_series->best_fit(slope, intercept);
         std::cout << "slope is " << slope<< " intercept is " << intercept << std::endl;
     } 
 }
