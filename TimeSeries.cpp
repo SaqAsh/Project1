@@ -197,11 +197,11 @@ void TimeSeries::ADD(uint Y, int D){
         if (years[i] == Y && data[i] == -1){
             data[i] = D;
             ++ valid_data_count_;
-            std::cout<<"success"<<"\n";
+            std::cout<<"success"<<std::endl;
             return;
         }
         if (years[i] == Y && data[i] != -1){
-            std::cout << "failure"<<"\n";
+            std::cout << "failure"<<std::endl;
             return;
         }
     }
@@ -209,7 +209,7 @@ void TimeSeries::ADD(uint Y, int D){
     TimeSeries::Push(D, data, data_array_size_, data_array_capacity_);
     TimeSeries::Push(Y, years, years_array_size_, years_array_capacity_);
     ++valid_data_count_;
-    std::cout<<"success"<<"\n";
+    std::cout<<"success"<<std::endl;
 
 }
 void TimeSeries::UPDATE(uint Y, int D){
@@ -217,14 +217,15 @@ void TimeSeries::UPDATE(uint Y, int D){
     for(std::size_t i = 0; i < data_array_size_; ++i){
         if(years[i] == Y && data[i] != -1){
             data[i] = D;
-            std::cout<<"success"<<"\n";
+            std::cout<<"success"<<std::endl;
             return;
         }
     }
 
-    std::cout<<"failure"<<"\n";
+    std::cout<<"failure"<<std::endl;
 }
 void TimeSeries::PRINT() {
+    bool valid_printed = false;
     if ( valid_data_count_ == 0) {
         std::cout<<"failure"<<std::endl;
         return;
@@ -232,11 +233,12 @@ void TimeSeries::PRINT() {
 
     for (std::size_t i = 0; i <  data_array_size_; ++i){
         if(data[i] == -1) continue;
-        if(i != 0) std::cout<<" ";  
+        if(valid_printed) std::cout<<" ";  
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
+        valid_printed = true;
     }
 
-    std::cout<<"\n";
+    std::cout<<std::endl;
 }
 
 bool TimeSeries::emptyDataSet() {

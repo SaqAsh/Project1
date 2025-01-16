@@ -52,7 +52,7 @@ void HandleFit(TimeSeries *t_series){
 
     t_series->best_fit(slope, intercept);
 
-    if (slope == 0 && intercept == 0){
+    if (t_series->emptyDataSet()){
         std::cout<<"failure" << std::endl;
     } else{
         std::cout << "slope is " << slope<< " intercept is " << intercept << std::endl;
