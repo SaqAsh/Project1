@@ -54,6 +54,7 @@ void HandleFit(TimeSeries *t_series){
 
     if (t_series->emptyDataSet()){
         std::cout<<"failure" << std::endl;
+        return;
     } else{
         std::cout << "slope is " << slope<< " intercept is " << intercept << std::endl;
     } 

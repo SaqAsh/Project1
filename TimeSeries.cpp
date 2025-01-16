@@ -201,7 +201,7 @@ void TimeSeries::ADD(uint Y, int D){
             return;
         }
         if (years[i] == Y && data[i] != -1){
-            std::cout << "failure"<<std::endl;
+            std::cout<<"failure"<<std::endl;
             return;
         }
     }
