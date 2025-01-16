@@ -10,7 +10,7 @@ void HandleLoad(TimeSeries *&t_series) {
     }
 
     t_series->LOAD(file_name);
-    std::cout << "success" << "\n";
+    std::cout << "success" << std::endl;
 }
 
 
@@ -32,11 +32,11 @@ void HandleUpdate(TimeSeries *t_series){
 
 void HandleMean(TimeSeries *t_series){
     double m = t_series->mean();
-    !m ? std::cout<<"failure" << "\n" : std::cout << "mean is " << m <<"\n";
+    !m ? std::cout<<"failure" << std::endl : std::cout << "mean is " << m <<std::endl;
 }
 
 void HandleMonotonic(TimeSeries *t_series){
-    t_series->is_monotonic() ? std::cout << "series is monotonic"<<"\n" : std::cout << "series is not monotonic"<<"\n"; 
+    t_series->is_monotonic() ? std::cout << "series is monotonic"<<std::endl : std::cout << "series is not monotonic"<<std::endl; 
 }
 
 void HandleFit(TimeSeries *t_series){
@@ -45,9 +45,9 @@ void HandleFit(TimeSeries *t_series){
     t_series->best_fit(slope, intercept);
 
     if (slope == 0 && intercept == 0){
-        std::cout<<"failure" << "\n";
+        std::cout<<"failure" << std::endl;
     } else{
-        std::cout << "slope is " << slope<< " intercept is " << intercept << "\n";
+        std::cout << "slope is " << slope<< " intercept is " << intercept << std::endl;
     } 
 }
 

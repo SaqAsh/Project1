@@ -71,7 +71,7 @@ bool TimeSeries::is_monotonic() {
 }
 
 void TimeSeries::best_fit(double &m, double &b) {
-    assert(years_array_size_ == data_array_size_ && "years and data are not in pairs");
+    assert(years_array_size_ == data_array_size_);
 
     std::size_t N = valid_data_count_;
 
@@ -101,7 +101,7 @@ void TimeSeries::best_fit(double &m, double &b) {
     double m_term_4 = year_sum * year_sum; 
 
     // Ensure no division by zero in slope calculation
-    assert((m_term_3 - m_term_4) != 0 && "divide by zero error with slope");
+    assert((m_term_3 - m_term_4) != 0);
     m = (m_term_1 - m_term_2) / (m_term_3 - m_term_4);
 
     double b_term_1 = data_sum;
@@ -109,7 +109,7 @@ void TimeSeries::best_fit(double &m, double &b) {
     double b_term_3 = N;
 
     // Ensure no division by zero in intercept calculation
-    assert(b_term_3 != 0 && "divide by zero for y intercept");
+    assert(b_term_3 != 0);
     b = (b_term_1 - b_term_2) / b_term_3;
 }
 
@@ -213,6 +213,7 @@ void TimeSeries::ADD(uint Y, int D){
 
 }
 void TimeSeries::UPDATE(uint Y, int D){
+
     for(std::size_t i = 0; i < data_array_size_; ++i){
         if(years[i] == Y && data[i] != -1){
             data[i] = D;
@@ -220,13 +221,20 @@ void TimeSeries::UPDATE(uint Y, int D){
             return;
         }
     }
+
     std::cout<<"failure"<<"\n";
 }
 void TimeSeries::PRINT() {
-    if ( valid_data_count_ == 0) std::cout<<"failure"<<"\n";
+    if ( valid_data_count_ == 0) {
+        std::cout<<"failure"<<std::endl;
+        return;
+    }   
+
     for (std::size_t i = 0; i <  data_array_size_; ++i){
         if(data[i] == -1) continue;
+        if(i != 0) std::cout<<" ";  
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
     }
+
     std::cout<<"\n";
 }
