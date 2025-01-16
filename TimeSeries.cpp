@@ -1,7 +1,4 @@
 #include "TimeSeries.h"
-#include <sys/types.h>
-#include <bits/c++config.h>
-#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -21,8 +18,6 @@ TimeSeries::~TimeSeries() {
     years = nullptr;
     delete[] data;
     data = nullptr;
-    assert(data == nullptr);
-    assert(years == nullptr);
 }
 
 double TimeSeries::mean() {
@@ -30,7 +25,7 @@ double TimeSeries::mean() {
 
     double sum = 0;
 
-    for (std::size_t i = 0; i < data_array_size_; ++i) {
+    for (int i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue; //skipping invalid elements
         sum += data[i]; //adding all the valid elements together
     }
@@ -43,15 +38,15 @@ bool TimeSeries::is_monotonic() {
 
     bool strictly_increasing_flag = true;
     bool strictly_decreasing_flag = true;
-    std::size_t N = data_array_size_;
+    int N = data_array_size_;
 
-    std::size_t i = 0;
+    int i = 0;
 
     while (i < N - 1) {
         // we keep moving the left pointer until we have found valid data
         while (i < N && data[i] == -1) ++i;
 
-        std::size_t j = i + 1;
+        int j = i + 1;
 
         // we keep moving the right pointer until we have found valid data
         while (j < N && data[j] == -1) ++j;
@@ -71,9 +66,8 @@ bool TimeSeries::is_monotonic() {
 }
 
 void TimeSeries::best_fit(double &m, double &b) {
-    assert(years_array_size_ == data_array_size_);
 
-    std::size_t N = valid_data_count_;
+    int N = valid_data_count_;
 
     // If no valid data, set m and b to zero
     if (valid_data_count_ == 0) {
@@ -82,12 +76,12 @@ void TimeSeries::best_fit(double &m, double &b) {
         return;
     }
 
-    int data_sum = 0;
-    int year_sum = 0;
-    int data_year_sum = 0;
-    int year_year_sum = 0;
+    double data_sum = 0;
+    double year_sum = 0;
+    double data_year_sum = 0;
+    double year_year_sum = 0;
 
-    for (std::size_t i = 0; i < data_array_size_; ++i) {
+    for (int i = 0; i < data_array_size_; ++i) {
         if (data[i] == -1) continue;
         year_sum += years[i];
         data_sum += data[i];
@@ -101,7 +95,6 @@ void TimeSeries::best_fit(double &m, double &b) {
     double m_term_4 = year_sum * year_sum; 
 
     // Ensure no division by zero in slope calculation
-    assert((m_term_3 - m_term_4) != 0);
     m = (m_term_1 - m_term_2) / (m_term_3 - m_term_4);
 
     double b_term_1 = data_sum;
@@ -109,50 +102,44 @@ void TimeSeries::best_fit(double &m, double &b) {
     double b_term_3 = N;
 
     // Ensure no division by zero in intercept calculation
-    assert(b_term_3 != 0);
     b = (b_term_1 - b_term_2) / b_term_3;
 }
 
 
-void TimeSeries::IncreaseSize(int*& arr, uint size, uint &capacity) {
-    // don't needa do anything if the capacity is not equal to the size
+void TimeSeries::IncreaseSize(int*& arr, int size, int &capacity) {
     if (size != capacity) return;
 
-    //we needa basically take all the elements of the arr and then copy it into a new array
     // then delete the old array and take the pointer arr, and attach that to the new array
     // and set the new array's pointer to nullptr
     int* new_arr = new int[capacity * 2];
-    for (std::size_t i = 0; i < capacity; ++i) {
+    for (int i = 0; i < capacity; ++i) {
         new_arr[i] = arr[i]; // putting in all the existing elements into new array
     }
     capacity *= 2;
     delete[] arr;
 
     arr = new_arr;
-    assert(arr == new_arr);
 }
 
-void TimeSeries::DecreaseSize(int*& arr, uint size, uint &capacity) {
+void TimeSeries::DecreaseSize(int*& arr, int size, int &capacity) {
     double ratio = capacity / 4;
     if (size != ratio) return;
     if (capacity / 2 < 2) return;
 
     capacity /= 2;
 
-    assert(capacity > size);
 
     int *new_arr = new int[capacity];
 
-    for(std::size_t i = 0; i < size; ++i) {
+    for(int i = 0; i < size; ++i) {
         new_arr[i] = arr[i];
     }
 
     delete[] arr;
     arr = new_arr;
-    assert(arr == new_arr);
 }
 
-void TimeSeries::Push(int value, int*& arr, uint &size, uint &capacity) {
+void TimeSeries::Push(int value, int*& arr, int &size, int &capacity) {
     //Will Increase size if needed
 
     TimeSeries::IncreaseSize(arr, size, capacity);
@@ -191,8 +178,8 @@ void TimeSeries::LOAD(std::string file_name) {
 }
 
 
-void TimeSeries::ADD(uint Y, int D){
-    for(std::size_t i = 0; i < data_array_size_; ++i){
+void TimeSeries::ADD(int Y, int D){
+    for(int i = 0; i < data_array_size_; ++i){
         //invalid data in the position
         if (years[i] == Y && data[i] == -1){
             data[i] = D;
@@ -212,9 +199,9 @@ void TimeSeries::ADD(uint Y, int D){
     std::cout<<"success"<<std::endl;
 
 }
-void TimeSeries::UPDATE(uint Y, int D){
+void TimeSeries::UPDATE(int Y, int D){
 
-    for(std::size_t i = 0; i < data_array_size_; ++i){
+    for(int i = 0; i < data_array_size_; ++i){
         if(years[i] == Y && data[i] != -1){
             data[i] = D;
             std::cout<<"success"<<std::endl;
@@ -231,7 +218,7 @@ void TimeSeries::PRINT() {
         return;
     }   
 
-    for (std::size_t i = 0; i <  data_array_size_; ++i){
+    for (int i = 0; i <  data_array_size_; ++i){
         if(data[i] == -1) continue;
         if(valid_printed) std::cout<<" ";  
         std::cout<<"("<<years[i]<<","<<data[i]<<")";

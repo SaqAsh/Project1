@@ -1,8 +1,5 @@
 #ifndef TIMESERIES_H
 #define TIMESERIES_H
-
-#include <sys/types.h>
-#include <bits/c++config.h>
 #include <string>
 
 class TimeSeries {
@@ -14,8 +11,8 @@ public:
     bool is_monotonic();
     void best_fit(double &m, double &b);
     void LOAD(std::string file_name);
-    void ADD(uint Y, int D);
-    void UPDATE(uint Y, int D);
+    void ADD(int Y, int D);
+    void UPDATE(int Y, int D);
     void PRINT();
     bool emptyDataSet();
 
@@ -26,14 +23,14 @@ private:
     double b;
     std::string series_name;
     std::string series_code;
-    uint years_array_size_;
-    uint years_array_capacity_;
-    uint data_array_size_;
-    uint valid_data_count_;
-    uint data_array_capacity_;
-    void IncreaseSize(int*& arr, uint size, uint &capacity);
-    void DecreaseSize(int*& arr, uint size, uint &capacity); 
-    void Push(int value, int*& arr, uint &size, uint &capacity); 
+    int years_array_size_;
+    int years_array_capacity_;
+    int data_array_size_;
+    int valid_data_count_;
+    int data_array_capacity_;
+    void IncreaseSize(int*& arr, int size, int &capacity);
+    void DecreaseSize(int*& arr, int size, int &capacity); 
+    void Push(int value, int*& arr, int &size, int &capacity); 
 };
 
 #endif
