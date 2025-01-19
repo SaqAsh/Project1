@@ -1,0 +1,15 @@
+CLASS DESIGN
+
+The classes I implemented were the TimeSeries class.
+
+ALTERNATIVES AND JUSTIFICATION
+
+I decided to only write the TimeSeries class, since that was the only class that was require by the project and wrote a file called InputHandler.cpp which contained the main function. This was the file that implemented
+all the helper methods for input and output
+
+RUNTIME ANALYSIS
+
+Runtime for the UPDATE command has a worst-case runtime of O(N) because my implementation runs the ranges from the start of the array to the end of the array. So at the worst case 
+it finds the element at the last spot where it needs to update. Inside my loop there are only O(1) operations, such as an if statement, as well as the assignment operator as well as print. Since those are constant time,
+they have no effect on the big O notation analysis. This is because whenever we have constant terms, and such as O(3) operation, and we combine with a linear time operation, which in our case would be going through the whole 
+array, which is O(n), the operation becomes O(n+3) which is then simplified down to O(n).  

@@ -1,7 +1,9 @@
 #include <iostream>
 
 #include <string>
-#include "TimeSeries.h"  
+#include "TimeSeries.h"
+
+//This is the function that handles the load command, it takes the TimeSeries object and loads the file using the LOAD function 
 void HandleLoad(TimeSeries *&t_series) {
     std::string file_name;
     if (std::cin >> file_name) {
@@ -13,7 +15,7 @@ void HandleLoad(TimeSeries *&t_series) {
     std::cout << "success" << std::endl;
 }
 
-
+//takes in the time series object and adds a new data point using the add function
 void HandleAdd(TimeSeries *t_series){
     unsigned int Y;
     int D;
@@ -22,6 +24,7 @@ void HandleAdd(TimeSeries *t_series){
     }
 }
 
+//takes in the time series object and updates a new data point using the update function
 void HandleUpdate(TimeSeries *t_series){
     unsigned int Y;
     int D;
@@ -30,6 +33,7 @@ void HandleUpdate(TimeSeries *t_series){
     }
 }
 
+//takes in the time series object and finds the mean using the mean function or if the data set is empty then just prints the failure
 void HandleMean(TimeSeries *t_series){
     double m = t_series->mean();
     if(t_series->emptyDataSet()){
@@ -39,6 +43,8 @@ void HandleMean(TimeSeries *t_series){
     std::cout << "mean is " << m <<std::endl;
 }
 
+
+//takes in the time series object and finds if the series is monotonic or not 
 void HandleMonotonic(TimeSeries *t_series){
     if(t_series -> emptyDataSet()){
         std::cout<<"failure" << std::endl;
@@ -47,6 +53,7 @@ void HandleMonotonic(TimeSeries *t_series){
     t_series->is_monotonic() ? std::cout << "series is monotonic"<<std::endl : std::cout << "series is not monotonic"<<std::endl; 
 }
 
+//takes in the time series object and finds the best fit line using the function implemented in time series
 void HandleFit(TimeSeries *t_series){
     double slope, intercept;
 
@@ -59,12 +66,15 @@ void HandleFit(TimeSeries *t_series){
     } 
 }
 
+
+//this is the entry point of our application 
 int main() {
 
     TimeSeries *time_series = new TimeSeries();          
 
     std::string command;
 
+    //this is the loop of our application that handles the input
     while (1) {
 
         std::cin >> command;
