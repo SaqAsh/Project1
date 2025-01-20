@@ -1,15 +1,24 @@
 CLASS DESIGN
 
-The classes I implemented were the TimeSeries class.
+The classes I implemented were the TimeSeries class. This class is where I carefully abstracted away the logic that the front facing cpp file, (InputHandler.cpp).
+This mean't stuff like the size of the arrays as well as the capacities were all in private variables. Even the count of the valid data points was a private variable. The only thing that was exposed in that front was 
+the function, emptyDataSet() which kind of acts like a way that the input handler can know if there is any valid, to adhere to project requirements (to print failure when there is no valid data).
+I also tried making helper functions that were independent of the rest of the methods in the time series class to help handle the resizing of the dynamic array as per the project requirements. This allowed for an easier debugging process
 
 ALTERNATIVES AND JUSTIFICATION
 
 I decided to only write the TimeSeries class, since that was the only class that was require by the project and wrote a file called InputHandler.cpp which contained the main function. This was the file that implemented
-all the helper methods for input and output
+all the helper methods for input and output. A route that I could have taken is making a template for my resizable array. However, I did make sure that I kept the logic pertaining to the resizing was as separated as possible. This meant
+that there was no pushing or popping logic as well as memory management logic inside any of the time series functions that were required, and all of that logic was abstracted away in private methods. 
+This allowed for a good time in debugging. Another thing that I made sure to do is split up all the calculations term by term. Although it does require for the computer to store more values into the memory, it does allow 
+for an easier time debugging since now I can calculate out the expected value, then breakpoint on the singular terms and see if one of the terms is being miscalculated or not. It is a lot easier to debug then 
+placing a lot of brackets together and calculating out the m and b values like that. Also it calls for a cleaner looking code and does not cause any BEDMAS errors. 
 
 RUNTIME ANALYSIS
 
 Runtime for the UPDATE command has a worst-case runtime of O(N) because my implementation runs the ranges from the start of the array to the end of the array. So at the worst case 
 it finds the element at the last spot where it needs to update. Inside my loop there are only O(1) operations, such as an if statement, as well as the assignment operator as well as print. Since those are constant time,
 they have no effect on the big O notation analysis. This is because whenever we have constant terms, and such as O(3) operation, and we combine with a linear time operation, which in our case would be going through the whole 
-array, which is O(n), the operation becomes O(n+3) which is then simplified down to O(n).  
+array, which is O(n), the operation becomes O(n+3) which is then simplified down to O(n). For the MONOTONIC command we can confidently state that the best case scenario is runtime is O(1). This is because lets take the hypothetical 
+situation that we only have one value in the data array. Well at that point our function will immediately return true, with no iterations required since there are no valid adjacent values to compare with. That means that our function runs in constant time, 
+O(1), because it bypasses the loop entirely. There's nothing to process beyond the initial check, so the monotonicity is determined instantly. 
