@@ -31,6 +31,9 @@ private:
     void IncreaseSize(int*& arr, int size, int &capacity);
     void DecreaseSize(int*& arr, int size, int &capacity); 
     void Push(int value, int*& arr, int &size, int &capacity); 
+    int SearchInsertPosition(int* arr, int value, int size);
+    void InsertIntoPosition(int*& arr, int value, int position, int& size, int& capacity);
+    void MakeSpaceAtPosition(int*& arr, int position, int size, int capacity);
 };
 
 #endif

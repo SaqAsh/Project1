@@ -5,7 +5,6 @@
 
 //This is the constructor for the TimeSeries class
 // It initializes the years and data arrays with a capacity of 2 and with the size of 0, which is the initial state of the application 
-// It also initializes the valid_data_count_ to 0, which is the number of valid data points in the array which is strategy that I used
 // instead of filtering out all the invalid data points, instead I just kept track of which of the data points were valid and which were not
 TimeSeries::TimeSeries() {
     years = new int[2];  
@@ -14,7 +13,6 @@ TimeSeries::TimeSeries() {
     data = new int[2];   
     data_array_capacity_ = 2;
     data_array_size_ = 0;
-    valid_data_count_ = 0;
 }
 
 
@@ -30,7 +28,7 @@ TimeSeries::~TimeSeries() {
 //This is the mean function for the TimeSeries class, it goes through and finds the mean of the valid data points 
 double TimeSeries::mean() {
     // Had to make sure that we don't have zero valid data since that would cause a division by zero error
-    if (valid_data_count_ == 0) return 0;
+    if (emptyDataSet()) return 0;
 
     double sum = 0;
     // Going through the data array and adding all the valid elements together
@@ -40,40 +38,29 @@ double TimeSeries::mean() {
     }
 
     // Returning the mean of the valid data points via dividing the sum by the number of valid data points
-    return sum / valid_data_count_;
+    return sum / data_array_size_;
 }
 
 //This is the is_monotonic function for the TimeSeries class, it goes through and checks if the data is strictly increasing or decreasing
 bool TimeSeries::is_monotonic() {
     // making sure that we don't have no valid data, this is the edge case that we need to handle per the project instructions
-    if (valid_data_count_ == 0) return false;
+    if (emptyDataSet()) return false;
 
     //these are the flags that tell us if we are increasing or decreasing, we first assume that we are increasing and then we figure out if we are not via two pointers in the while loop
     bool increasing_flag = true;
     bool decreasing_flag = true;
     int N = data_array_size_;
-
     int i = 0;
 
-    // we are going through the data array and checking if we are strictly increasing or decreasing, this is done via two pointers method, 
-    // we are comparing the two valid pointers that are adjacent to each other and checking if they are increasing or decreasing
+    // we are going through the data array and checking if we are strictly increasing or decreasing, this is done via two pointers method
     while (i < N - 1) {
-        // we keep moving the left pointer until we have found valid data
-        while (i < N && data[i] == -1) ++i;
-
         int j = i + 1;
-
-        // we keep moving the right pointer until we have found valid data
-        while (j < N && data[j] == -1) ++j;
-
-        //if we are trying to compare past the array then we break
-        if (j >= N) break;
 
         // these are the flags that tell us if we are strictly increasing or decreasing
         if (data[i] > data[j]) increasing_flag = false;
         if (data[i] < data[j]) decreasing_flag = false;
 
-        //moving the left pointer to the next valid right pointer's position
+        //moving the left pointer to the next right pointer's position
         i = j;
     }
 
@@ -83,10 +70,10 @@ bool TimeSeries::is_monotonic() {
 //This is the best_fit function for the TimeSeries class, it goes through and finds the best fit line for the data points
 void TimeSeries::best_fit(double &m, double &b) {
 
-    int N = valid_data_count_;
+    int N = data_array_size_;
 
     // If no valid data, set m and b to zero
-    if (valid_data_count_ == 0) {
+    if (emptyDataSet()) {
         m = 0;
         b = 0;
         return;
@@ -172,9 +159,59 @@ void TimeSeries::Push(int value, int*& arr, int &size, int &capacity) {
     // Add the value to the end of the array and increment the count
     arr[size++] = value;
 }
+//this is the function that searches for the insertion position for the value in the array when we are trying to add a new data point, this will allow us to 
+// also determine if the value is already in the array via the -1 return value
+int TimeSeries::SearchInsertPosition(int* arr, int value, int size) {
+    // Handle empty array case
+    if (size == 0) return 0;
+    
+    int left = 0;
+    int right = size - 1;
+    
+    // If value is greater than the last element, append to end, no need to run a loop, making it best case O(1)
+    if (value > arr[right]) return size;
+    
+    // If value is less than the first element, insert at beginning, no need to run a loop, making it best case O(1)
+    if (value < arr[left]) return 0;
+    
+    while (left <= right) {
+        int mid = left + (right - left)/2;
+        if (arr[mid] == value) return -1;  // Duplicate found
+        if (arr[mid] < value) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return left;
+}
 
-//this is load function for the file, it takes the file name as argument and reads the file with the correct information
+void TimeSeries::InsertIntoPosition(int*& arr, int value, int position, int& size, int& capacity) {
+    TimeSeries::IncreaseSize(arr, size, capacity);
+    TimeSeries::MakeSpaceAtPosition(arr, position, size, capacity);
+    arr[position] = value;
+    ++size;
+}
+void TimeSeries::MakeSpaceAtPosition(int*& arr, int position, int size, int capacity) {
+    // If inserting at the end, no need to shift
+    if (position >= size) return;
+    
+    // Start from the end and shift everything right by one position
+    for(int i = size; i > position; --i) {
+        arr[i] = arr[i-1];
+    }
+}
+/*
+    CITATION: 
+
+    I used the following website to understand how to read a file in C++: 
+    https://www.tutorialspoint.com/parsing-a-comma-delimited-std-string-in-cplusplus
+    I used this website to help me figure out the logic on how stringstream works, and how the getline works as well 
+    I used it to understand how to parse comma delimited strings in C++. Using this website I was able to figure out the logic 
+    for going through the whole file and parsing the data and then storing them in the arrays that I put in. 
+*/
 void TimeSeries::LOAD(std::string file_name) {
+//this is load function for the file, it takes the file name as argument and reads the file with the correct information
     std::ifstream file(file_name); 
     std::string line;
 
@@ -200,8 +237,10 @@ void TimeSeries::LOAD(std::string file_name) {
             int data_sample = std::stoi(component);
 
             //this is super important piece of data that we have, it is used to make sure that we know what the valid data is
-            if(data_sample != -1) ++valid_data_count_;
-
+            if(data_sample == -1){
+                ++year;
+                continue;
+            } 
             Push(data_sample, data, data_array_size_, data_array_capacity_); // here we are casting a string into an int to actually get the numbers into a number format
 
             Push(year++, years, years_array_size_, years_array_capacity_); // no need to cast to a number, we are simply just pushing in the years
@@ -215,32 +254,22 @@ void TimeSeries::LOAD(std::string file_name) {
 void TimeSeries::ADD(int Y, int D){
     // goes through each value in the data array and checks if the year is already in the array, if it is then we don't add it
     //if its invalid data at that point then we change it up
-    for(int i = 0; i < data_array_size_; ++i){
-        //invalid data in the position
-        if (years[i] == Y && data[i] == -1){
-            data[i] = D;
-            ++ valid_data_count_;
-            std::cout<<"success"<<std::endl;
-            return;
-        }
-        if (years[i] == Y && data[i] != -1){
-            std::cout<<"failure"<<std::endl;
-            return;
-        }
+
+    int insert_position = SearchInsertPosition(years, Y, years_array_size_);
+    if (insert_position == -1){
+        std::cout<<"failure"<<std::endl;
+        return;
     }
-    //adding to the end of the list
-    TimeSeries::Push(D, data, data_array_size_, data_array_capacity_);
-    TimeSeries::Push(Y, years, years_array_size_, years_array_capacity_);
-    ++valid_data_count_;
+    InsertIntoPosition(years, Y, insert_position, years_array_size_, years_array_capacity_);
+    InsertIntoPosition(data, D, insert_position, data_array_size_, data_array_capacity_);
     std::cout<<"success"<<std::endl;
 
 }
 //this function is the update function for the TimeSeries class, it updates the data point in the data array if it is valid
 void TimeSeries::UPDATE(int Y, int D){
-    //goes through all the elements in the data array and checks if the year in the array is there and if there is valid at that point 
-    // if there is valid data at that point then we update the data point
+    //goes through all the elements in the data array and checks if the year in the array is there 
     for(int i = 0; i < data_array_size_; ++i){
-        if(years[i] == Y && data[i] != -1){
+        if(years[i] == Y){
             data[i] = D;
             std::cout<<"success"<<std::endl;
             return;
@@ -255,14 +284,13 @@ void TimeSeries::PRINT() {
     //this is the flag that tells us if we have printed out any valid data points to avoid the extra spacing before the first valid data point
     bool valid_printed = false;
     // if we have no valid data then we print failure
-    if ( valid_data_count_ == 0) {
+    if (emptyDataSet()) {
         std::cout<<"failure"<<std::endl;
         return;
     }   
 
     //goes through all the valid data points and prints them pairwise with the year
     for (int i = 0; i <  data_array_size_; ++i){
-        if(data[i] == -1) continue;
         if(valid_printed) std::cout<<" ";  
         std::cout<<"("<<years[i]<<","<<data[i]<<")";
         valid_printed = true;
@@ -273,5 +301,5 @@ void TimeSeries::PRINT() {
 
 //this is essentially a getter type function that checks if that is any valid data in the data array
 bool TimeSeries::emptyDataSet() {
-    return valid_data_count_ == 0;
+    return data_array_size_ == 0;
 }  
