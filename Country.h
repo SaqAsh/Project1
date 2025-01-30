@@ -17,10 +17,6 @@ class Country {
         void LIST();
         void DELETE(std::string series_code);   
         void BIGGEST();
-
-    private:
-        LinkedList* time_series_linked_list_;
-
 };
 
 #endif

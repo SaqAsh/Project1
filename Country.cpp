@@ -11,10 +11,10 @@ Country::~Country() {
     delete time_series_linked_list;
 }
 
-void Country::LOAD(std::string file_name) {
-    std::ifstream file(file_name);
+void Country::LOAD(std::string country_name) {
+    std::ifstream file("lab2_multidata.csv");
     std::string line;
-    
+    bool found = false;
     delete time_series_linked_list;
     time_series_linked_list = new LinkedList();
     
@@ -23,8 +23,15 @@ void Country::LOAD(std::string file_name) {
         
         std::stringstream s_stream(line);
         std::string component;
-        
-        std::getline(s_stream, country_name, ',');
+        std::string country;
+        std::getline(s_stream,country, ',');
+        if (country == country_name && !found) {
+            found = true;
+            this->country_name = country;
+        }
+        if(found && country != country_name) {
+            break;
+        }
         std::getline(s_stream, country_code, ',');
         
         series->LOAD(line);
@@ -84,7 +91,6 @@ void Country::LIST(){
 }
 
 void Country::DELETE(std::string series_code){
-    // Special case for deleting head
     if (time_series_linked_list->head && time_series_linked_list->head->data.series_code == series_code) {
         Node* temp = time_series_linked_list->head;
         time_series_linked_list->head = time_series_linked_list->head->next;
@@ -110,7 +116,6 @@ void Country::DELETE(std::string series_code){
 }
 //have not handled the case where no time series has valid data
 void Country::BIGGEST(){
-    //finding the max via the voting against the first value
     double max_mean = time_series_linked_list ->head->data.mean();
     std::string time_series_code_of_biggest_mean = time_series_linked_list->head->data.series_code;
     Node *temp = time_series_linked_list-> head;

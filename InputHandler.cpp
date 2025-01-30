@@ -4,12 +4,13 @@
 #include "Country.h"
 //This is the function that handles the load command, it takes the TimeSeries object and loads the file using the LOAD function 
 void handle_load(Country *&country) {
-    std::string file_name;
-    if (std::cin >> file_name) {
+    std::string country_name;
+    if (std::cin >> country_name) {
         delete country;
+        country = nullptr;
         country = new Country();  
     }
-    country->LOAD(file_name);
+    country->LOAD(country_name);
     std::cout << "success" << std::endl;
 }
 
