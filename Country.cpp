@@ -109,11 +109,9 @@ void Country::DELETE(std::string series_code){
         std::cout<<"failure"<<"\n";
         return;
     }
-
-    Node *head = linked_list->head;
-    if (head && head->data->series_code == series_code) {
-        Node* temp =head; 
-        head = head->next;
+    if (linked_list->head && linked_list->head->data->series_code == series_code) {
+        Node* temp = linked_list->head; 
+        linked_list->head = linked_list->head->next;
         delete temp->data; //making sure the time series is deleted before deleting the node
         delete temp; //deleting the node itself
         std::cout << "success" << "\n";
