@@ -1,0 +1,24 @@
+CLASS DESIGN
+
+The classes I implemented were the TimeSeries class. This class is where I carefully abstracted away the logic that the front facing cpp file, (InputHandler.cpp).
+This mean't stuff like the size of the arrays as well as the capacities were all in private variables. Even the count of the valid data points was a private variable. The only thing that was exposed in that front was 
+the function, emptyDataSet() which kind of acts like a way that the input handler can know if there is any valid, to adhere to project requirements (to print failure when there is no valid data).
+I also tried making helper functions that were independent of the rest of the methods in the time series class to help handle the resizing of the dynamic array as per the project requirements. This allowed for an easier debugging process
+In addition I for project 2's purposes I made it so that there is a country class that contains a linked list of time series as well as the string for the country name as well as code. This means that all the data for that country is isolated in
+the sense that the country class could simply be thrown out when we are trying to load a new country, or when we are going to start storing multiple countries, at that point we can have a data structure that contains multiple country objects. 
+
+ALTERNATIVES AND JUSTIFICATION
+
+I decided to only write the TimeSeries class, since that was the only class that was require by the project and wrote a file called InputHandler.cpp which contained the main function. This was the file that implemented
+all the helper methods for input and output. A route that I could have taken is making a template for my resizable array. However, I did make sure that I kept the logic pertaining to the resizing was as separated as possible. This meant
+that there was no pushing or popping logic as well as memory management logic inside any of the time series functions that were required, and all of that logic was abstracted away in private methods. 
+This allowed for a good time in debugging. Another thing that I made sure to do is split up all the calculations term by term. Although it does require for the computer to store more values into the memory, it does allow 
+for an easier time debugging since now I can calculate out the expected value, then breakpoint on the singular terms and see if one of the terms is being miscalculated or not. It is a lot easier to debug then 
+placing a lot of brackets together and calculating out the m and b values like that. Also it calls for a cleaner looking code and does not cause any BEDMAS errors. Yet again I could have made a template for the linked list implementation 
+however I decided to keep it simple for now. Another thing that I would say that I could have done differently is used a different data structure, instead of a linked list, however I decided to use a linked list it is 
+a lot easier to add as well as remove elements from the list. Something that requires some justification is the load method that I made use of from a previous project, project 1. This method was used to load the data from the csv
+into the time series which was very convenient. This will allow me to use similar logic for the load in project 3.
+
+RUNTIME ANALYSIS
+We must begin proving the DELETE command runtime. The worst case runtime for the delete command is determined by the number of loops as well as operations that are performed. We will first start by looking at the outer loop.
+Let n be the number of elements in the linked list. The outer loop will run at a WORST CASE of n times in order to find the time series that we want to delete. Now for the operation that are performed inside the loop. 

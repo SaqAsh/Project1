@@ -5,9 +5,10 @@
 #include "LinkedList.h"
 class Country {
     public:
+        bool isEmpty;
         std::string country_name;
         std::string country_code;
-        LinkedList* time_series_linked_list;
+        LinkedList* linked_list;
         Country();
         ~Country();
         void LOAD(std::string file_name);

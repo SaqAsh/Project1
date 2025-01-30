@@ -4,11 +4,12 @@
 #include <fstream>
 
 Country::Country(){
-    time_series_linked_list = new LinkedList();
+    isEmpty = true;
+    linked_list = new LinkedList();
 }
 
 Country::~Country() {
-    delete time_series_linked_list;
+    delete linked_list;
 }
 
 void Country::LOAD(std::string country_name) {
@@ -25,16 +26,17 @@ void Country::LOAD(std::string country_name) {
             found = true;
             this->country_name = country;
             std::getline(s_stream, country_code, ',');
-            
+            isEmpty = false;
             TimeSeries* series = new TimeSeries();
             series->LOAD(line);
-            time_series_linked_list->HandleInsertIntoLinkedList(series);
+            linked_list->handle_insert(series);
         }
         else if (found && country == country_name) {
+            isEmpty = false;
             TimeSeries* series = new TimeSeries();
             std::getline(s_stream, country_code, ',');
             series->LOAD(line);
-            time_series_linked_list->HandleInsertIntoLinkedList(series);
+            linked_list->handle_insert(series);
         }
         else if (found && country != country_name) {
             break;
@@ -45,7 +47,7 @@ void Country::LOAD(std::string country_name) {
 }
 
 void Country::ADD(double Y, double D, std::string series_code){
-    Node *temp = time_series_linked_list->head;
+    Node *temp = linked_list->head;
     if(!temp){
         std::cout<<"failure"<<"\n";
         return;
@@ -62,7 +64,7 @@ void Country::ADD(double Y, double D, std::string series_code){
 }   
 
 void Country::UPDATE(double Y, double D, std::string series_code){
-    Node *temp = time_series_linked_list->head;
+    Node *temp = linked_list->head;
     if(!temp){
         std::cout<<"failure"<<"\n";
         return;
@@ -78,7 +80,7 @@ void Country::UPDATE(double Y, double D, std::string series_code){
 }
 
 void Country::PRINT(std::string series_code){
-    Node * temp = time_series_linked_list->head;
+    Node * temp = linked_list->head;
 
     while(temp !=NULL && temp->data->series_code !=series_code){
         temp = temp->next;
@@ -93,7 +95,7 @@ void Country::PRINT(std::string series_code){
 
 void Country::LIST(){
     std::cout<<country_name<<" " << country_code << " ";
-    Node * temp = time_series_linked_list->head;
+    Node * temp = linked_list->head;
     while(temp){
         std::cout<<temp->data->series_name<<" ";
         temp = temp->next;
@@ -102,37 +104,48 @@ void Country::LIST(){
 }
 
 void Country::DELETE(std::string series_code){
-    Node *head = time_series_linked_list->head;
+
+    if(!linked_list->head){
+        std::cout<<"failure"<<"\n";
+        return;
+    }
+
+    Node *head = linked_list->head;
     if (head && head->data->series_code == series_code) {
         Node* temp =head; 
         head = head->next;
-        delete temp->data;
-        delete temp;
+        delete temp->data; //making sure the time series is deleted before deleting the node
+        delete temp; //deleting the node itself
         std::cout << "success" << "\n";
         return;
     }
 
-    Node* temp = time_series_linked_list->head;
+    Node* temp = linked_list->head;
     while(temp && temp->next && temp->next->data->series_code != series_code){
         temp = temp->next;
     }
     
+    //checking if the node is there or if we even have a linked list
     if(!temp || !temp->next){
         std::cout << "failure" << "\n";
         return;
     }
-    
     Node* node_to_delete = temp->next;
     temp->next = node_to_delete->next;
-    delete node_to_delete->data;
-    delete node_to_delete;
+    delete node_to_delete->data; //making sure the time series is deleted before deleting the node
+    delete node_to_delete; //deleting the node itself
     std::cout << "success" << "\n";
 }
-//have not handled the case where no time series has valid data
 void Country::BIGGEST(){
-    double max_mean = time_series_linked_list ->head->data->mean();
-    std::string time_series_code_of_biggest_mean = time_series_linked_list->head->data->series_code;
-    Node *temp = time_series_linked_list-> head;
+
+    if(isEmpty){
+        std::cout << "failure" << "\n";
+        return;
+    }
+
+    double max_mean = linked_list->head->data->mean();
+    std::string time_series_code_of_biggest_mean = linked_list->head->data->series_code;
+    Node *temp = linked_list-> head;
 
     while(temp){
         double curr_mean = temp->data->mean();

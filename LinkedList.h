@@ -8,7 +8,7 @@ class LinkedList {
 public:
     LinkedList();
     ~LinkedList();
-    void HandleInsertIntoLinkedList(TimeSeries* time_series);
+    void handle_insert(TimeSeries* time_series);
     Node* head;
 
 private:

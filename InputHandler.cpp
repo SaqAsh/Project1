@@ -8,6 +8,7 @@ void handle_load(Country *&country) {
     std::cin.ignore();
     std::getline(std::cin, country_name);
     delete country;
+    country = nullptr;
     country = new Country();  
     country->LOAD(country_name);
     std::cout << "success" << std::endl;

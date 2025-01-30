@@ -15,9 +15,8 @@ void LinkedList::Destroy(Node *n) {
     }
 }
 
-void LinkedList::HandleInsertIntoLinkedList(TimeSeries* time_series) {
+void LinkedList::handle_insert(TimeSeries* time_series) {
     Node* newNode = new Node(time_series);
-    newNode->next = nullptr;  
     if (!head) {
         head = newNode;
         return;
