@@ -5,9 +5,9 @@
 
 class Node {
 public:
-    TimeSeries data;
+    TimeSeries* data;
     Node* next;
-    Node(TimeSeries &data, Node* next = nullptr);
+    Node(TimeSeries* data, Node* next = nullptr);
 };
 
 #endif 

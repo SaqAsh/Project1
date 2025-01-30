@@ -15,28 +15,30 @@ void Country::LOAD(std::string country_name) {
     std::ifstream file("lab2_multidata.csv");
     std::string line;
     bool found = false;
-    delete time_series_linked_list;
-    time_series_linked_list = new LinkedList();
     
     while(std::getline(file, line)) {
-        TimeSeries* series = new TimeSeries();  
-        
         std::stringstream s_stream(line);
-        std::string component;
         std::string country;
-        std::getline(s_stream,country, ',');
+        std::getline(s_stream, country, ',');
+        
         if (country == country_name && !found) {
             found = true;
             this->country_name = country;
+            std::getline(s_stream, country_code, ',');
+            
+            TimeSeries* series = new TimeSeries();
+            series->LOAD(line);
+            time_series_linked_list->HandleInsertIntoLinkedList(series);
         }
-        if(found && country != country_name) {
+        else if (found && country == country_name) {
+            TimeSeries* series = new TimeSeries();
+            std::getline(s_stream, country_code, ',');
+            series->LOAD(line);
+            time_series_linked_list->HandleInsertIntoLinkedList(series);
+        }
+        else if (found && country != country_name) {
             break;
         }
-        std::getline(s_stream, country_code, ',');
-        
-        series->LOAD(line);
-        
-        time_series_linked_list->HandleInsertIntoLinkedList(*series);
     }
     
     file.close();
@@ -86,7 +88,7 @@ void Country::PRINT(std::string series_code){
         std::cout<<"failure"<<"\n";
         return;
     }
-    temp->data.PRINT();
+    temp->data->PRINT();
 }
 
 void Country::LIST(){
@@ -100,16 +102,18 @@ void Country::LIST(){
 }
 
 void Country::DELETE(std::string series_code){
-    if (time_series_linked_list->head && time_series_linked_list->head->data.series_code == series_code) {
-        Node* temp = time_series_linked_list->head;
-        time_series_linked_list->head = time_series_linked_list->head->next;
+    Node *head = time_series_linked_list->head;
+    if (head && head->data->series_code == series_code) {
+        Node* temp =head; 
+        head = head->next;
+        delete temp->data;
         delete temp;
         std::cout << "success" << "\n";
         return;
     }
 
     Node* temp = time_series_linked_list->head;
-    while(temp && temp->next && temp->next->data.series_code != series_code){
+    while(temp && temp->next && temp->next->data->series_code != series_code){
         temp = temp->next;
     }
     
@@ -120,6 +124,7 @@ void Country::DELETE(std::string series_code){
     
     Node* node_to_delete = temp->next;
     temp->next = node_to_delete->next;
+    delete node_to_delete->data;
     delete node_to_delete;
     std::cout << "success" << "\n";
 }
