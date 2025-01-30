@@ -7,12 +7,16 @@
 // It initializes the years and data arrays with a capacity of 2 and with the size of 0, which is the initial state of the application 
 // instead of filtering out all the invalid data points, instead I just kept track of which of the data points were valid and which were not
 TimeSeries::TimeSeries() {
-    years = new int[2];  
+    years = new double[2];  
     years_array_capacity_ = 2;
     years_array_size_ = 0;
-    data = new int[2];   
+    data = new double[2];   
     data_array_capacity_ = 2;
     data_array_size_ = 0;
+    m = 0.0;
+    b = 0.0;
+    series_name = "";
+    series_code = "";
 }
 
 
@@ -114,12 +118,12 @@ void TimeSeries::best_fit(double &m, double &b) {
 }
 
 //This is the function that decides if it needs to increase the size of the array based off of the array size and capacity, adhering to project specs
-void TimeSeries::IncreaseSize(int*& arr, int size, int &capacity) {
+void TimeSeries::IncreaseSize(double*& arr, int size, int &capacity) {
     if (size != capacity) return;
 
     // then delete the old array and take the pointer arr, and attach that to the new array
     // and set the new array's pointer to nullptr
-    int* new_arr = new int[capacity * 2];
+    double* new_arr = new double[capacity * 2];
     for (int i = 0; i < capacity; ++i) {
         new_arr[i] = arr[i]; // putting in all the existing elements into new array
     }
@@ -130,7 +134,7 @@ void TimeSeries::IncreaseSize(int*& arr, int size, int &capacity) {
 }
 
 // this is the function that decides if it needs to decrease the size of the array based off of the array size and capacity, adhering to project specs
-void TimeSeries::DecreaseSize(int*& arr, int size, int &capacity) {
+void TimeSeries::DecreaseSize(double*& arr, int size, int &capacity) {
     //preliminary checks to see if further computation is required or not, don't want to overcompute if not needed to. 
     double ratio = capacity / 4;
     if (size != ratio) return;
@@ -139,7 +143,7 @@ void TimeSeries::DecreaseSize(int*& arr, int size, int &capacity) {
     capacity /= 2;
 
     //declaring the new array that we will be putting the previous elements into
-    int *new_arr = new int[capacity];
+    double *new_arr = new double[capacity];
 
     //copying all the values of the array into this new array
     for(int i = 0; i < size; ++i) {
@@ -152,7 +156,7 @@ void TimeSeries::DecreaseSize(int*& arr, int size, int &capacity) {
 }
 
 //adds to the array and increases the size if needed
-void TimeSeries::Push(int value, int*& arr, int &size, int &capacity) {
+void TimeSeries::Push(double value, double*& arr, int &size, int &capacity) {
     //Will Increase size if needed
 
     TimeSeries::IncreaseSize(arr, size, capacity);
@@ -161,7 +165,7 @@ void TimeSeries::Push(int value, int*& arr, int &size, int &capacity) {
 }
 //this is the function that searches for the insertion position for the value in the array when we are trying to add a new data point, this will allow us to 
 // also determine if the value is already in the array via the -1 return value
-int TimeSeries::SearchInsertPosition(int* arr, int value, int size) {
+int TimeSeries::SearchInsertPosition(double *arr, double value, int size) {
     // Handle empty array case
     if (size == 0) return 0;
     
@@ -186,13 +190,13 @@ int TimeSeries::SearchInsertPosition(int* arr, int value, int size) {
     return left;
 }
 
-void TimeSeries::InsertIntoPosition(int*& arr, int value, int position, int& size, int& capacity) {
+void TimeSeries::InsertIntoPosition(double*& arr, double value, int position, int& size, int& capacity) {
     TimeSeries::IncreaseSize(arr, size, capacity);
     TimeSeries::MakeSpaceAtPosition(arr, position, size, capacity);
     arr[position] = value;
     ++size;
 }
-void TimeSeries::MakeSpaceAtPosition(int*& arr, int position, int size, int capacity) {
+void TimeSeries::MakeSpaceAtPosition(double*& arr, int position, int size, int capacity) {
     // If inserting at the end, no need to shift
     if (position >= size) return;
     
@@ -210,48 +214,39 @@ void TimeSeries::MakeSpaceAtPosition(int*& arr, int position, int size, int capa
     I used it to understand how to parse comma delimited strings in C++. Using this website I was able to figure out the logic 
     for going through the whole file and parsing the data and then storing them in the arrays that I put in. 
 */
-void TimeSeries::LOAD(std::string file_name) {
-//this is load function for the file, it takes the file name as argument and reads the file with the correct information
-    std::ifstream file(file_name); 
-    std::string line;
+void TimeSeries::LOAD(std::string line) {
+    //this is the stringstream that we are using to parse the line
+    std::stringstream s_stream(line);
+    std::string component;
+    int year = 1960;
 
-    //followed the instructions for project zero, checking if the file is open or not
-    while (std::getline(file, line)) {
-        //this is the stringstream that we are using to parse the line
-        std::stringstream s_stream(line);
-        std::string component;
-        int year = 1960;
-        //skipping the first two values
-        std::getline(s_stream, component, ','); 
+    std::getline(s_stream, component, ','); 
+    std::getline(s_stream, component, ',');
 
-        std::getline(s_stream, component, ',');
+    std::getline(s_stream, series_name, ',');
+    std::getline(s_stream, series_code, ',');
 
-        //storing the time series name and code
-        std::getline(s_stream, series_name, ',');
+    //going through the rest of the line and parsing the data and years
+    //pushing all the data into the arrays, using the helper methods
+    while (std::getline(s_stream, component, ',')) {
+        double data_sample = std::stod(component);
 
-        std::getline(s_stream, series_code, ',');
-
-        //going through the rest of the line and parsing the data and years, pushing all the data into the arrays, using the helper methods I made 
-        // so we don't have to deal with all the resizing logic and memory management
-        while (std::getline(s_stream, component, ',')) {
-            int data_sample = std::stoi(component);
-
-            //this is super important piece of data that we have, it is used to make sure that we know what the valid data is
-            if(data_sample == -1){
-                ++year;
-                continue;
-            } 
-            Push(data_sample, data, data_array_size_, data_array_capacity_); // here we are casting a string into an int to actually get the numbers into a number format
-
-            Push(year++, years, years_array_size_, years_array_capacity_); // no need to cast to a number, we are simply just pushing in the years
-        }
+        //it is used to make sure that we know what the valid data is
+        if(data_sample == -1) {
+            ++year;
+            continue;
+        } 
+        
+        // here we are casting a string into an int to actually get the numbers
+        Push(data_sample, data, data_array_size_, data_array_capacity_);
+        
+        // no need to cast to a number, we are simply just pushing in the years
+        Push(year++, years, years_array_size_, years_array_capacity_);
     }
-
-    file.close();
 }
 
 //this is the ADD function for the TimeSeries class, it adds a new data point to the data array
-void TimeSeries::ADD(int Y, int D){
+void TimeSeries::ADD(double Y, double D){
     // goes through each value in the data array and checks if the year is already in the array, if it is then we don't add it
     //if its invalid data at that point then we change it up
 
@@ -266,7 +261,7 @@ void TimeSeries::ADD(int Y, int D){
 
 }
 //this function is the update function for the TimeSeries class, it updates the data point in the data array if it is valid
-void TimeSeries::UPDATE(int Y, int D){
+void TimeSeries::UPDATE(double Y, double D){
     //goes through all the elements in the data array and checks if the year in the array is there 
     for(int i = 0; i < data_array_size_; ++i){
         if(years[i] == Y){
