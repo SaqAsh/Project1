@@ -44,32 +44,41 @@ void Country::LOAD(std::string country_name) {
 
 void Country::ADD(double Y, double D, std::string series_code){
     Node *temp = time_series_linked_list->head;
-    while(temp!=NULL && temp->data.series_code != series_code){
+    if(!temp){
+        std::cout<<"failure"<<"\n";
+        return;
+    }
+
+    while(temp!=NULL && temp->data->series_code != series_code){
         temp = temp->next;
     }
     if(!temp){
         std::cout<<"failure"<<"\n";
         return;
     }
-    temp->data.ADD(Y,D);
+    temp->data->ADD(Y,D);
 }   
 
 void Country::UPDATE(double Y, double D, std::string series_code){
     Node *temp = time_series_linked_list->head;
-    while(temp!=NULL && temp->data.series_code != series_code){
+    if(!temp){
+        std::cout<<"failure"<<"\n";
+        return;
+    }   
+    while(temp!=NULL && temp->data->series_code != series_code){
         temp = temp->next;
     }
     if(!temp){
         std::cout<<"failure"<<"\n";
         return;
     }
-    temp->data.UPDATE(Y,D);
+    temp->data->UPDATE(Y,D);
 }
 
 void Country::PRINT(std::string series_code){
     Node * temp = time_series_linked_list->head;
 
-    while(temp !=NULL && temp->data.series_code !=series_code){
+    while(temp !=NULL && temp->data->series_code !=series_code){
         temp = temp->next;
     }
     // now that we are at the point where we may have found the series, we can print that series
@@ -84,7 +93,7 @@ void Country::LIST(){
     std::cout<<country_name<<" " << country_code << " ";
     Node * temp = time_series_linked_list->head;
     while(temp){
-        std::cout<<temp->data.series_name<<" ";
+        std::cout<<temp->data->series_name<<" ";
         temp = temp->next;
     }
     std::cout<<"\n";
@@ -116,15 +125,15 @@ void Country::DELETE(std::string series_code){
 }
 //have not handled the case where no time series has valid data
 void Country::BIGGEST(){
-    double max_mean = time_series_linked_list ->head->data.mean();
-    std::string time_series_code_of_biggest_mean = time_series_linked_list->head->data.series_code;
+    double max_mean = time_series_linked_list ->head->data->mean();
+    std::string time_series_code_of_biggest_mean = time_series_linked_list->head->data->series_code;
     Node *temp = time_series_linked_list-> head;
 
     while(temp){
-        double curr_mean = temp->data.mean();
+        double curr_mean = temp->data->mean();
         if(curr_mean > max_mean){
             max_mean = curr_mean;
-            time_series_code_of_biggest_mean = temp->data.series_code;
+            time_series_code_of_biggest_mean = temp->data->series_code;
         }
         temp = temp->next;
     }
