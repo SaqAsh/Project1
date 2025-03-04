@@ -12,11 +12,10 @@ Country::~Country() {
     delete linked_list;
 }
 
-void Country::LOAD(std::string country_name) {
-    std::ifstream file("lab2_multidata.csv");
+void Country::LOAD(std::string country_name, std::string file_name) {
+    std::ifstream file(file_name);
     std::string line;
     bool found = false;
-    
     while(std::getline(file, line)) {
         std::stringstream s_stream(line);
         std::string country;
@@ -42,8 +41,6 @@ void Country::LOAD(std::string country_name) {
             break;
         }
     }
-    
-    file.close();
 }
 
 void Country::ADD(double Y, double D, std::string series_code){

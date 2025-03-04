@@ -11,7 +11,7 @@ class Country {
         LinkedList* linked_list;
         Country();
         ~Country();
-        void LOAD(std::string file_name);
+        void LOAD(std::string country_name,std::string file_name);
         void ADD(double Y, double D, std::string series_code);
         void UPDATE(double Y, double D, std::string series_code);
         void PRINT(std::string series_code);
