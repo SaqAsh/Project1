@@ -1,4 +1,5 @@
 #include "Countries.h"
+#include "Node.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -47,8 +48,34 @@ void Countries::LIST(std::string country_name) {
 }
 
 void Countries::RANGE(std::string series_code) {
-    CountryTree->Range(series_code);
+
+    double min_mean = 0.0;
+    double max_mean = 0.0;
+    bool flag = false;
+
+    for (int i = 0; i < total_countries; i++) {
+        Node* curr = country_array[i]->linked_list->head;
+        while (curr != nullptr) {
+            if (curr->data->series_code == series_code && !curr->data->emptyDataSet()) {
+                double mean = curr->data->mean();
+                if (!flag) {
+                    min_mean = mean;
+                    max_mean = mean;
+                    flag = true;
+                } else {
+                    if (mean < min_mean)
+                        min_mean = mean;
+                    if (mean > max_mean)
+                        max_mean = mean;
+                }
+                break;  
+            }
+            curr = curr->next;
+        }
+    }
+    std::cout << min_mean << " " << max_mean << std::endl;
 }
+
 
 void Countries::BUILD(std::string series_code) {
 

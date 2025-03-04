@@ -7,7 +7,13 @@ BST::BST(){
 }
 
 BST::~BST(){
-
+    destructorHelper(root);
+}
+void BST::destructorHelper(BST_Node* node){
+    if(!node)return;
+    destructorHelper(node->left);
+    destructorHelper(node->right);
+    delete node;
 }
 bool BST::deleteFn(std::string country_name){
     return true;

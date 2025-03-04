@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include "BST_Node.h"
 class BST{
     public:
+        BST_Node* root;
         BST();
         ~BST();
         bool deleteFn(std::string country_name);
@@ -10,5 +12,6 @@ class BST{
         void Range(std::string series_code);
     private:
         void printNode();
+        void destructorHelper(BST_Node* node);
 
 };
