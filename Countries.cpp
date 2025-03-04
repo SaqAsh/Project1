@@ -4,6 +4,7 @@
 #include <sstream>
 
 Countries::Countries() {
+    BST * CountryTree = nullptr;
     country_array = new Country*[512];  
     total_countries = 0;
 }
@@ -46,21 +47,49 @@ void Countries::LIST(std::string country_name) {
 }
 
 void Countries::RANGE(std::string series_code) {
-    std::cout << "RANGE function not implemented yet" << std::endl;
+    CountryTree->Range(series_code);
 }
 
 void Countries::BUILD(std::string series_code) {
-    std::cout << "BUILD function not implemented yet" << std::endl;
+
+    if (CountryTree) {
+        delete CountryTree;  
+    }
+
+    CountryTree = new BST(); 
+
+    std::cout << "success" << std::endl;
 }
 
+
 void Countries::FIND(std::string mean, std::string operation) {
-    std::cout << "FIND function not implemented yet" << std::endl;
+    
+    if(!CountryTree){
+        std::cout<< "failure" << "\n";
+        return;
+    }
+    CountryTree->find(mean, operation);
 }
 
 void Countries::DELETE(std::string country_name) {
-    std::cout << "DELETE function not implemented yet" << std::endl;
+    if(!CountryTree){
+        std::cout<< "failure" << "\n";
+        return;
+    }
+    if(CountryTree->deleteFn(country_name)){
+        std::cout<< "success" << "\n";
+        return;
+    }
+    else{
+        std::cout<< "failure" << "\n";
+        return;
+    }
 }
 
 void Countries::LIMITS(std::string condition) {
-    std::cout << "LIMITS function not implemented yet" << std::endl;
+    if(!CountryTree){
+        std::cout<< "failure" << "\n";
+        return;
+    }
+    CountryTree->Limits(condition);
 }

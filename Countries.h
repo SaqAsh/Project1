@@ -4,7 +4,7 @@
 
 class Countries{
     public:
-    // BST * CountryTree;
+    BST * CountryTree;
     Countries ();
     ~Countries();
     void LOAD(std::string filename);
