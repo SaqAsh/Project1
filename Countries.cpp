@@ -5,7 +5,7 @@
 #include <sstream>
 
 Countries::Countries() {
-    BST * CountryTree = nullptr;
+    CountryTree = nullptr;
     country_array = new Country*[512];  
     total_countries = 0;
 }
