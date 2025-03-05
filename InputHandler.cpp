@@ -14,7 +14,8 @@ void handle_load(Countries *countries){
 // This is the function that handles listing a country's details
 void handle_list(Countries *countries){
     std::string countries_name;
-    if(std::cin >> countries_name){
+    std::cin.ignore();
+    if(std::getline(std::cin, countries_name)){
         countries->LIST(countries_name);
     }  
 }
@@ -47,7 +48,8 @@ void handle_find(Countries *countries){
 // This is the function that handles deleting a country from the binary tree
 void handle_delete(Countries *countries){
     std::string countries_name;
-    if(std::cin >> countries_name){
+    std::cin.ignore();
+    if(std::getline(std::cin, countries_name)){
         countries->DELETE(countries_name);
     }
 }
