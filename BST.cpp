@@ -7,7 +7,10 @@ BST::BST() {
 }
 
 BST::~BST() {
-    destructorHelper(root);
+    if(root) {
+        destructorHelper(root);
+        root = nullptr;
+    } 
 }
 
 void BST::destructorHelper(BST_Node* node) {

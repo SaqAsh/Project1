@@ -15,6 +15,9 @@ Countries::~Countries() {
         delete country_array[i];  
     }
     delete[] country_array;  
+    if (CountryTree) {
+        delete CountryTree;
+    }
 }
 
 void Countries::LOAD(std::string filename) {
@@ -80,6 +83,7 @@ void Countries::RANGE(std::string series_code) {
 void Countries::BUILD(std::string series_code) {
     if (CountryTree) {
         delete CountryTree;
+        CountryTree = nullptr;
     }
 
     CountryTree = new BST();
