@@ -11,7 +11,7 @@ class Countries{
     void LIST(std::string country_name);
     void RANGE(std::string series_code);
     void BUILD(std::string country_name);
-    void FIND(std::string mean, std::string operation); 
+    void FIND(double mean, std::string operation); 
     void DELETE(std::string country_name);
     void LIMITS(std::string condition);
     private:

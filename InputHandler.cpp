@@ -40,7 +40,7 @@ void handle_find(Countries *countries){
     std::string mean;
     std::string operation;
     if(std::cin >> mean >> operation){
-        countries->FIND(mean, operation);
+        countries->FIND(std::stod(mean), operation);
     }
 }
 

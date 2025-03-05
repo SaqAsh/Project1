@@ -78,19 +78,29 @@ void Countries::RANGE(std::string series_code) {
 
 
 void Countries::BUILD(std::string series_code) {
-
     if (CountryTree) {
-        delete CountryTree;  
+        delete CountryTree;
     }
 
-    CountryTree = new BST(); 
+    CountryTree = new BST();
 
+    for (int i = 0; i < total_countries; i++) {
+        Node* curr = country_array[i]->linked_list->head;
+        std::string countryName = country_array[i]->country_name;
+        while (curr) {
+            if (curr->data->series_code == series_code){
+                CountryTree->Insert(curr, countryName);
+                break;  
+            }
+            curr = curr->next;
+        }
+    }
     std::cout << "success" << std::endl;
 }
 
 
-void Countries::FIND(std::string mean, std::string operation) {
-    
+
+void Countries::FIND(double mean, std::string operation) {
     if(!CountryTree){
         std::cout<< "failure" << "\n";
         return;
