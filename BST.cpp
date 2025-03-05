@@ -36,10 +36,10 @@ bool BST::deleteHelper(BST_Node*& node, std::string country_name) {
             node->num_countries--;
 
             // If the node is empty, delete it
-            // if (node->num_countries == 0) {
-            //     delete node;
-            //     node = nullptr;
-            // }
+            if (node->num_countries == 0) {
+                delete node;
+                node = nullptr;
+            }
             return true;
         }
     }
@@ -114,27 +114,36 @@ void BST::Insert(Node* country, std::string country_name) {
 
 BST_Node* BST::insertHelper(BST_Node* node, Node* country, std::string country_name) {
     double mean = country->data->mean();
-
+    const double tol = 1e-3;
+    
     if (!node) {
         BST_Node* newNode = new BST_Node();
+        // We assume the node was constructed with capacity >= 2.
         newNode->num_countries = 1;
-        newNode->countries = new std::string[1];
-        newNode->array_of_time_series = new TimeSeries*[1];
         newNode->countries[0] = country_name;
         newNode->array_of_time_series[0] = country->data;
         return newNode;
     }
-
+    
     double nodeMean = node->array_of_time_series[0]->mean();
-
-    if (mean < nodeMean) {
+    
+    // If the means are equal within tolerance, add the country to the current node.
+    if (fabs(mean - nodeMean) < tol) {
+        node->countries[node->num_countries] = country_name;
+        node->array_of_time_series[node->num_countries] = country->data;
+        node->num_countries++;
+        return node;
+    }
+    else if (mean < nodeMean) {
         node->left = insertHelper(node->left, country, country_name);
-    } else {
+    }
+    else {
         node->right = insertHelper(node->right, country, country_name);
     }
-
+    
     return node;
 }
+
 
 void BST::printNode() {
     printHelper(root);
