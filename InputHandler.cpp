@@ -11,6 +11,15 @@ void handle_load(Countries *countries){
     }
 }
 
+/*
+    CITATION: 
+
+    [4] A small part of this function was generated with the help of chat.openai.com with the prompt 
+    "I LITERALLY CANT GET THIS TO WORK, WHY DO TWO WORD COUNTRY NAMES NOT WORK IN MY PROGRAM, PLEASE HELP"
+    where the model responded with telling me to use std::cin.ignore() which was the solution to the problem.
+    This was a very helpful resource since I was not able to figure out the solution to the problem on my own.
+*/
+
 // This is the function that handles listing a country's details
 void handle_list(Countries *countries){
     std::string countries_name;
@@ -45,6 +54,15 @@ void handle_find(Countries *countries){
     }
 }
 
+/*
+    CITATION: 
+
+    [5] A small part of this function was generated with the help of chat.openai.com with the prompt 
+    "I LITERALLY CANT GET THIS TO WORK, WHY DO TWO WORD COUNTRY NAMES NOT WORK IN MY PROGRAM, PLEASE HELP"
+    where the model responded with telling me to use std::cin.ignore() which was the solution to the problem.
+    This was a very helpful resource since I was not able to figure out the solution to the problem on my own.
+*/
+
 // This is the function that handles deleting a country from the binary tree
 void handle_delete(Countries *countries){
     std::string countries_name;
@@ -64,7 +82,7 @@ void handle_limits(Countries *countries){
 
 // This is the entry point of our application
 int main() {
-    Countries *countries= new Countries();
+    Countries *countries = new Countries();
 
     std::string command;
 

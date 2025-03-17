@@ -25,9 +25,8 @@ private:
     void destructorHelper(BST_Node* node);
     BST_Node* leftLeaf(BST_Node* node);
     BST_Node* rightLeaf(BST_Node* node);
-    BST_Node* insertHelper(BST_Node* node, Node* country, std::string country_name);
+    BST_Node* insert_helper(BST_Node* node, Node* country, std::string country_name);
     bool deleteHelper(BST_Node*& node, std::string country_name);
-    void printHelper(BST_Node* node);
     double findMin(BST_Node* node);
     double findMax(BST_Node* node);
 };
