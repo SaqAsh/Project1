@@ -6,6 +6,13 @@ the function, emptyDataSet() which kind of acts like a way that the input handle
 I also tried making helper functions that were independent of the rest of the methods in the time series class to help handle the resizing of the dynamic array as per the project requirements. This allowed for an easier debugging process
 In addition I for project 2's purposes I made it so that there is a country class that contains a linked list of time series as well as the string for the country name as well as code. This means that all the data for that country is isolated in
 the sense that the country class could simply be thrown out when we are trying to load a new country, or when we are going to start storing multiple countries, at that point we can have a data structure that contains multiple country objects. 
+Another piece of class design that really makes my project stand out I feel like would be the organization between the actual implementation of the code 
+from that of the actual helper functions that are kept private for the class. This helps greatly when debugging since I exactly know which functions 
+are responsible for actually printing and which ones are responsible for the implementation of the code. We will now talk about the implementation of the Binary Search tree.
+The binary search tree implementation consists of the class BST as well as the BST_Node class. The Binary Search Tree is made up of these BST_Nodes which are crucial for the project.
+These BST_Nodes have a contains relationship with the BST class, as we well as a has relationship with the Time Series class. This is because the nodes of the binary search tree contain an array of
+time series objects which was crucial for the ordering of the binary search tree since now we have access to the mean functions, which is the way that we ensure ordering in this project. 
+The countries class contains this binary search tree, which is crucial since we are building the binary search tree based off of the array of countries inside the countries class.
 
 ALTERNATIVES AND JUSTIFICATION
 
@@ -18,7 +25,18 @@ placing a lot of brackets together and calculating out the m and b values like t
 however I decided to keep it simple for now. Another thing that I would say that I could have done differently is used a different data structure, instead of a linked list, however I decided to use a linked list it is 
 a lot easier to add as well as remove elements from the list. Something that requires some justification is the load method that I made use of from a previous project, project 1. This method was used to load the data from the csv
 into the time series which was very convenient. This will allow me to use similar logic for the load in project 3.
+Some justification for this project would be for the use of storing an array of time series. This allowed me to have all the perks of the time series 
+class that we developed at the start of the project, mainly in project one. An alternative that I could have done is instead had some sort of mapping 
+between country as well as the time series, maybe another class and then storing that within the array would be effective however I stayed away from that 
+due to time constraints. 
 
 RUNTIME ANALYSIS
-We must begin proving the DELETE command runtime. The worst case runtime for the delete command is determined by the number of loops as well as operations that are performed. We will first start by looking at the outer loop.
-Let n be the number of elements in the linked list. The outer loop will run at a WORST CASE of n times in order to find the time series that we want to delete. Now for the operation that are performed inside the loop. 
+
+For the LIMITS function, we analyze the worst and best-case scenarios based on the structure of the binary search tree (BST).  
+Let NUM_NODES be the number of nodes in the BST. The function operates recursively, making a series of comparisons at each recursive step as it traverses the tree.  
+In the best case, the BST is perfectly balanced, meaning its height is at most log(NUM_NODES). Since each recursive call moves one level deeper in the tree, and at each level, the function only performs a constant time operations (such as comparisons and pointer updates), the total number of recursive calls before reaching the leaf node is at most log(NUM_NODES). 
+This results in a best-case time complexity of O(log(NUM_NODES)).  
+In the worst case, the BST is completely unbalanced (a degenerate tree), where every node has only one child, effectively forming a linked list. In this case, the recursion must traverse NUM_NODES levels, making a single recursive call at each level.
+Since the operations performed at each level (such as checking conditions and moving to the next node) are constant time operations, they do not impact the overall complexity beyond the number of recursive calls. 
+Therefore, the worst-case time complexity is O(NUM_NODES).  
+Since each recursive call only performs a constant time operations (comparisons and pointer changes), the overall time complexity is determined solely by the depth of the recursion, which is O(log(NUM_NODES)) in the best case, and O(NUM_NODES) in the worst case.
