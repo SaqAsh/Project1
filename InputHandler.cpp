@@ -80,6 +80,30 @@ void handle_limits(Countries *countries){
     }
 }
 
+//This is the function that handles looking up a country into the hashtable
+void handle_lookup(Countries *countries){
+    std::string country_code;
+    if(std::cin >>country_code){
+        countries->LOOKUP(country_code);
+    }
+}
+
+//this is the function that handles removing a country into the hashtable
+void handle_remove(Countries *countries){
+    std::string country_code;
+    if(std::cin >>country_code){
+        countries->REMOVE(country_code);
+    }
+}
+
+//this is the function that handles inserting a country into the hashtable
+void handle_insert(Countries *countries){
+    std::string country_code;
+    std::string file_name;
+    if(std::cin >>country_code >> file_name){
+        countries->INSERT(country_code, file_name);
+    }
+}   
 // This is the entry point of our application
 int main() {
     Countries *countries = new Countries();
@@ -116,6 +140,16 @@ int main() {
         else if (command == "LIMITS") {
             handle_limits(countries);
         }
+        else if (command == "LOOKUP"){
+            handle_lookup(countries);
+        }
+        else if (command == "REMOVE"){
+            handle_remove(countries);
+        }
+        else if(command == "INSERT"){
+            handle_insert(countries);
+        }
+
     }
     delete countries;
     return 0;

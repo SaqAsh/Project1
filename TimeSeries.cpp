@@ -216,7 +216,7 @@ void TimeSeries::MakeSpaceAtPosition(double*& arr, int position, int size, int c
 */
 void TimeSeries::LOAD(std::string line) {
     //this is the stringstream that we are using to parse the line
-    std::stringstream s_stream(line);
+    std::stringstream s_stream(line); 
     std::string component;
     int year = 1960;
 
@@ -252,12 +252,12 @@ void TimeSeries::ADD(double Y, double D){
 
     int insert_position = SearchInsertPosition(years, Y, years_array_size_);
     if (insert_position == -1){
-        std::cout<<"failure"<<std::endl;
+        std::cout<<"failure"<<"\n";
         return;
     }
     InsertIntoPosition(years, Y, insert_position, years_array_size_, years_array_capacity_);
     InsertIntoPosition(data, D, insert_position, data_array_size_, data_array_capacity_);
-    std::cout<<"success"<<std::endl;
+    std::cout<<"success"<<"\n";
 
 }
 //this function is the update function for the TimeSeries class, it updates the data point in the data array if it is valid
@@ -266,12 +266,12 @@ void TimeSeries::UPDATE(double Y, double D){
     for(int i = 0; i < data_array_size_; ++i){
         if(years[i] == Y){
             data[i] = D;
-            std::cout<<"success"<<std::endl;
+            std::cout<<"success"<<"\n";
             return;
         }
     }
 
-    std::cout<<"failure"<<std::endl;
+    std::cout<<"failure"<<"\n";
 }
 //this is the print function for the TimeSeries class, it prints out the data points in the data array
 void TimeSeries::PRINT() {
@@ -280,7 +280,7 @@ void TimeSeries::PRINT() {
     bool valid_printed = false;
     // if we have no valid data then we print failure
     if (emptyDataSet()) {
-        std::cout<<"failure"<<std::endl;
+        std::cout<<"failure"<<"\n";
         return;
     }   
 
@@ -291,10 +291,10 @@ void TimeSeries::PRINT() {
         valid_printed = true;
     }
 
-    std::cout<<std::endl;
+    std::cout<<"\n";
 }
 
 //this is essentially a getter type function that checks if that is any valid data in the data array
 bool TimeSeries::emptyDataSet() {
     return data_array_size_ == 0;
-}  
+} 

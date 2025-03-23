@@ -14,9 +14,6 @@ BST_Node::BST_Node(std::string country_name, TimeSeries* time_series, double min
 }
 // This is the destructor for the BST_Node class
 BST_Node::~BST_Node() {
-    // for(int i = 0; i < 512; i++) {
-    //     delete array_of_time_series[i];
-    // }
     delete [] array_of_time_series;
     array_of_time_series = nullptr;
     delete [] countries;

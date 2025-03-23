@@ -10,7 +10,7 @@ public:
     double mean();
     bool is_monotonic();
     void best_fit(double &m, double &b);
-    void LOAD(std::string file_name);
+    void LOAD(std::string filename);
     void ADD(double Y, double D);
     void UPDATE(double Y, double D);
     void PRINT();

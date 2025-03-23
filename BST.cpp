@@ -77,7 +77,7 @@ void BST::find(double mean, std::string operation) {
     // encode the string operation into numbers for ease of debugging since I do not know how to spell
     int operation_decoded= (operation == "less") ? 0 : (operation == "equal") ? 1 : (operation == "greater") ? 2 : -1; 
     FindHelper(root, mean, operation_decoded);
-    std::cout << std::endl; // printing the end line just for the project requirements
+    std::cout << "\n"; // printing the end line just for the project requirements
 }
 /*
     CITATION: 
@@ -128,7 +128,7 @@ void BST::Range(std::string series_code) {
     if (!root) return;
     double minMean = findMin(root);
     double maxMean = findMax(root);
-    std::cout << minMean << " " << maxMean << std::endl;
+    std::cout << minMean << " " << maxMean << "\n";
 }
 
 //Helper function to recurse through tree and find the minimum mean
@@ -148,11 +148,21 @@ void BST::Insert(Node* country, std::string country_name) {
     root = insert_helper(root, country, country_name);
 }
 
+/*
+    CITATION: 
 
+    [5] A small part of this function was generated with the help of chat.openai.com with the prompt 
+    what is the floating point counterpart for the absolute value function in c++ where chatgpt responded with 
+    fabs() which is what I am usin for the tolerance and it told me that it is using the cmath library which is what I am using
+    Another part of this function was generated with the help of chat.openai.com with the prompt
+    ChatGPT helped frame the logic for initially grouping multiple countries in a single BST node and then splitting them up based on their values. 
+    My nodes aren't splitting correctly, can you give me a frame on how you can do this certain thing, I need to group them initially then split them based off of values, I can take 
+    care of accessing the values just give me pseudocode/some c++ code as a frame, since you don't know anything about the data acessing 
+*/
 BST_Node* BST::insert_helper(BST_Node* node, Node* country, std::string country_name) {
     double mean = country->data->mean();
     
-    // If no node exists, create one and initialize its range and list.
+    // if we don't got a node, in the sense no root then we create a new bst node and insert the country into it
     if (!node) {
         BST_Node* newNode = new BST_Node(country_name, country->data, mean, mean);
         newNode->num_countries = 1;
@@ -160,15 +170,13 @@ BST_Node* BST::insert_helper(BST_Node* node, Node* country, std::string country_
     }
     
     // If the node has not yet split (i.e. no children), insert into its  list.
-    if (node->left == nullptr && node->right == nullptr) {
+    if (!node->left && !node->right) {
         node->countries[node->num_countries] = country_name;
-        node->array_of_time_series[node->num_countries] = country->data;
-        node->num_countries++;
+        node->array_of_time_series[node->num_countries++] = country->data;
         
-        // Update the node's range.
         if (mean < node->min) node->min = mean;
         if (mean > node->max) node->max = mean;
-        
+        // if we don't have equal values and we have more than one country we gotta do some splitting
         if (node->num_countries > 1 && fabs(node->max - node->min) > 1e-3) {
             double threshold = node->min + (node->max - node->min) / 2.0;
             BST_Node* leftChild = nullptr;
@@ -192,14 +200,9 @@ BST_Node* BST::insert_helper(BST_Node* node, Node* country, std::string country_
         return node;
     }
     else {
-        // Node already split: insert the new country directly into the proper child.
+        //insert the new country directly into the proper child.
         double threshold = node->min + (node->max - node->min) / 2.0;
-        if (mean < threshold)
-            node->left = insert_helper(node->left, country, country_name);
-        else
-            node->right = insert_helper(node->right, country, country_name);
-        
-        // Update parent's range if needed.
+        (mean < threshold)? node->left = insert_helper(node->left, country, country_name) : node->right = insert_helper(node->right, country, country_name);
         if (mean < node->min) node->min = mean;
         if (mean > node->max) node->max = mean;
         return node;
