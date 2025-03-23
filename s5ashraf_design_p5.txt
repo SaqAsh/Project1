@@ -15,7 +15,13 @@ These objects were stored in sequential order, meaning that there is no optimal 
 The hashing implementation allowed us to get an O(1) lookup. This is because we no longer had to iterate through the whole array to search for a certain country, instead, we just used the hashing function to access. 
 In addition, I added some private helper methods in order for the hashing implementation to be modular for our array that we had in p3. 
 Finally, what I also added was an existence method inside the countries class in order to assist with the lookup of the hashing as well. The hashing mechanism not only improved the efficiency but also ensured that there was no linear search,
-as the key-value pairs enabled direct access, leveraging the hash table structure.
+as the key-value pairs enabled direct access, leveraging the hash table structure. Now for project 5, I added a new class called the graph class. This class is responsible for storing all the information related to the graph structure needed for this project.
+Inside the graph class, I used an unordered_map, where the key is the country code and the value is a G_Node. The G_Node class contains a pointer to the actual Country object, as well as another unordered_map. 
+This second map stores neighbouring country codes as keys and has an unordered_set of relationship_tuple entries as the values. These relationship_tuple entries represent all the different comparisons that exist between the two countries.
+The graph class is the one that handles all the graph-related commands like INITIALIZE, UPDATE_EDGES, ADJACENT, PATH, and RELATIONSHIP. All of these are handled inside the graph class directly. 
+I also made sure to add some private helper functions that make the code more modular and easier to debug. These helpers are responsible for internal logic, like checking if two countries meet the same relationship criteria or accessing internal data.
+The relationship_tuple class is used to represent a single comparison. It stores the series code, threshold, and the comparison type. This means that all the logic related to the comparisons is kept inside this class, which makes it cleaner and allows the graph class to stay focused on managing the structure and operations of the graph itself.
+
 
 I decided to only write the TimeSeries class, since that was the only class that was require by the project and wrote a file called InputHandler.cpp which contained the main function. This was the file that implemented
 all the helper methods for input and output. A route that I could have taken is making a template for my resizable array. However, I did make sure that I kept the logic pertaining to the resizing was as separated as possible. This meant
@@ -34,4 +40,14 @@ hashtable in the current countries class due to the fact that the hashtable cont
 
 RUNTIME ANALYSIS
 
-For the 
+The worst-case runtime for the ADJACENT command is determined by the number of neighbour lookups and the operations performed within the loop. Let n be the number of countries in the graph, and let k be the number of neighbours for the given country.
+Firstly, the command calls a helper function to retrieve the list of neighbouring countries. This results in a loop that runs k times, where k is the number of neighbours for the country being queried.
+Inside this loop, each iteration performs a constant-time operation, such as appending a name to a result vector or printing it. These O(1) operations do not scale with either k or n and therefore do not contribute meaningfully to the time complexity. As a result, they do not add to the upper bound.
+Secondly, during each of the k iterations, a helper function is called to retrieve the country name using the country code. This operation relies on an unordered_map. 
+In the worst-case, due to collisions and depending on the collision resolution strategy of the underlying implementation of std::unordered_map, this lookup may take up to O(n) time.
+Since we are doing this lookup k times, one for each neighbour, and each lookup may take up to O(n), the total time complexity becomes O(k * n). 
+There also exists an unordered_set storing the relationships for each edge, but since it is not accessed or modified in the ADJACENT command, it has no effect on the upper bound.
+Therefore, the overall worst-case runtime for the ADJACENT command comes out to be O(k * n).
+
+
+ 
