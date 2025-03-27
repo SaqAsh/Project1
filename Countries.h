@@ -4,6 +4,7 @@
 
 class Countries{
     public:
+        Country **country_array;
         BST * CountryTree;
         Countries ();
         ~Countries();
@@ -18,7 +19,6 @@ class Countries{
         void REMOVE(std::string country_code);
         void INSERT(std::string country_code, std::string file_name);
     private:
-        Country **country_array;
         int total_countries; 
         int primary_hash(std::string country_code);
         int secondary_hash(std::string country_code);

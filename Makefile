@@ -1,2 +1,2 @@
-all: InputHandler.cpp TimeSeries.cpp LinkedList.cpp Country.cpp Node.cpp Countries.cpp BST.cpp BST_Node.cpp
-	g++ -g -std=c++17 InputHandler.cpp TimeSeries.cpp LinkedList.cpp Country.cpp Node.cpp Countries.cpp BST.cpp BST_Node.cpp
+all: InputHandler.cpp TimeSeries.cpp LinkedList.cpp Country.cpp Node.cpp Countries.cpp BST.cpp BST_Node.cpp Graph.cpp 
+	g++ -g -std=c++17 InputHandler.cpp TimeSeries.cpp LinkedList.cpp Country.cpp Node.cpp Countries.cpp BST.cpp BST_Node.cpp Graph.cpp 
