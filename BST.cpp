@@ -1,7 +1,7 @@
 #include "BST.h"
 #include <iostream>
 #include <cmath>
-
+#include <vector>
 //this is the constructor for the binary search tree
 BST::BST() {
     root = nullptr;
@@ -73,11 +73,10 @@ bool BST::deleteHelper(BST_Node*& node, std::string country_name) {
     Give me the outline for a 3 case ternary in c++ since I wanted to use ternary operator but I had forgotten how to use it for 
     three operations where chatgpt responded with the outline of the ternary operator which is what I am using in this function
 */
-void BST::find(double mean, std::string operation) {
+void BST::find(double mean, std::string operation, std::vector<std::string>& countries) {   
     // encode the string operation into numbers for ease of debugging since I do not know how to spell
     int operation_decoded= (operation == "less") ? 0 : (operation == "equal") ? 1 : (operation == "greater") ? 2 : -1; 
-    FindHelper(root, mean, operation_decoded);
-    std::cout << "\n"; // printing the end line just for the project requirements
+    FindHelper(root, mean, operation_decoded, countries);
 }
 /*
     CITATION: 
@@ -87,19 +86,20 @@ void BST::find(double mean, std::string operation) {
     fabs() which is what I am usin for the tolerance and it told me that it is using the cmath library which is what I am using
 */
 //this is the helper function for the find function is using in order traversal to find the countries that match the mean
-void BST::FindHelper(BST_Node* curr, double mean, int operation_decoded) {
+void BST::FindHelper(BST_Node* curr, double mean, int operation_decoded, std::vector<std::string>& countries) {
     if (!curr) return;
-    FindHelper(curr->left, mean, operation_decoded);
+    FindHelper(curr->left, mean, operation_decoded, countries);
 
     // goes through all the countries in the array and checks if the mean is less, equal or greater than the mean
 
     for (int i = 0; i < curr->num_countries; i++) {
         double time_series_mean = curr->array_of_time_series[i]->mean();
         if ((operation_decoded == 0 && time_series_mean < mean) || (operation_decoded == 1 && fabs(time_series_mean - mean) < 1e-3) || (operation_decoded == 2 && time_series_mean > mean)) 
-            std::cout << curr->countries[i] << " ";
+            countries.push_back(curr->countries[i]);
+            // std::cout << curr->countries[i] << " ";
     }
 
-    FindHelper(curr->right, mean, operation_decoded);
+    FindHelper(curr->right, mean, operation_decoded, countries);
 }
 
 //Helper function to find the left most node in the tree for the limits

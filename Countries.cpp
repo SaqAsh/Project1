@@ -256,13 +256,13 @@ void Countries::BUILD(std::string series_code) {
         Node* curr = country_array[i]->linked_list->head;
         while (curr) {
             if (curr->data->series_code == series_code){
-                CountryTree->Insert(curr, country_array[i]->country_name);
+                CountryTree->Insert(curr, country_array[i]->country_code);
                 break;  // We have found the series, no need to go through the rest of the linked list
             }
             curr = curr->next;
         }
     }
-    std::cout << "success" << "\n";
+    // std::cout << "success" << "\n";
 }
 
 // Is the function that calls the find function in the BST class, handles failure case
@@ -271,7 +271,8 @@ void Countries::FIND(double mean, std::string operation) {
         std::cout<< "failure" << "\n";
         return;
     }
-    CountryTree->find(mean, operation);
+    std::vector<std::string> countries;
+    CountryTree->find(mean, operation, countries);
 }
 
 //This function is the one that calls the delete function in the BST class, handles failure cases

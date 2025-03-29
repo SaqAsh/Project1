@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <unordered_set>
+#include "BST.h"
 
 Graph::Graph() {
     countries = new Countries();
@@ -53,28 +54,24 @@ void Graph::INITIALIZE() {
     I think it should be similar to python zip
 */
 void Graph::UPDATE_EDGES(std::string series_code, double threshold, std::string relation) {
-    int op = (relation == "less") ? 0 : (relation == "equal") ? 1 : (relation == "greater") ? 2 : -1;
+    // Run through the tree and find the countries that are above the threshold using the functions that we have built before
     std::vector<std::string> qualifying_countries;
-
-    for (std::pair<std::string, g_node> pair : nodes) {
-        Country* country = pair.second.country;
-        bool found = false;
-        double mean = getSeriesMean(country, series_code, found);
-        if (apart_of_threshold(mean, threshold, op) && found) qualifying_countries.push_back(country->country_code);
-    }
+    countries->BUILD(series_code);
+    countries->CountryTree->find(threshold, relation, qualifying_countries);
 
     bool flag = false;
 
-    //goes through permutations of the qualifying countries and adds edges between them
-
+    // Loop through all pairs of qualifying countries to add an edge between them.
     for (int i = 0; i < qualifying_countries.size(); ++i) {
         for (int j = i + 1; j < qualifying_countries.size(); ++j) {
             Edge edge(series_code, threshold, relation);
-            if (addEdge(qualifying_countries[i], qualifying_countries[j], edge)) flag = true;
+            if (addEdge(qualifying_countries[i], qualifying_countries[j], edge))
+                flag = true;
         }
     }
     std::cout << (flag ? "success" : "failure") << std::endl;
 }
+
 
 /*
     CITATION:
