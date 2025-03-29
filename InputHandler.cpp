@@ -23,7 +23,7 @@ void handle_update_edges(Graph *graph){
     std::string threshold;
     std::string relation;
     if(std::cin >> series_code >> threshold >> relation){
-        graph->UPDATE_EDGES(series_code, threshold, relation); 
+        graph->UPDATE_EDGES(series_code, std::stod(threshold), relation); 
     }  
 }
 
